@@ -94,24 +94,18 @@ class Usuario(ABC):
     def total_usuarios(cls):
      return cls.contador     #Devuelve la cantidad total de usuarios creados
 
-#Método abstracto
-    #Verifica contraseña y estado del usuario
+#Método abstracto para iniciar sesión
     @abstractmethod
     def iniciar_sesion(self, contraseña):
-        if self.__contraseña == contraseña and self.__estado == True:
-            print("Sesion iniciada correctamente para " + self.__nombres + " " + self.__apellidos)
-            return True
-        else:
-            print("Contraseña incorrecta o usuario inactivo")
-            return False
+        pass
 
 #método para cerrar sesión
     def cerrar_sesion(self):
         print("Sesion cerrada para " + self.__nombres + " " + self.__apellidos)
 
-#Método abstracto para actualizar el perfil 
+
 # Sobrecarga simulada con Kwargs
-    @abstractmethod
+
     def actualizar_perfil(self, **kwargs): #Permite actualizar únicamente los datos enviados.
         if "nombres" in kwargs:
             self.nombres = kwargs["nombres"]
@@ -193,15 +187,16 @@ class Docente(Usuario):                           #se inicializan los atributos 
             print("Notas registradas: " + str(len(self.__notas_registradas)))
         else:
             print("Notas registradas: " + str(len(self.__notas_registradas)))
-    
-    def iniciar_sesion(self, contraseña):
-        return super().iniciar_sesion(contraseña)
 
-    def cerrar_sesion(self):
-        super().cerrar_sesion()
-    
-    def actualizar_perfil(self, **kwargs):
-        super().actualizar_perfil(**kwargs)
+#método sobreescrito para iniciar sesión  
+    def iniciar_sesion(self, contraseña):
+        if self.contraseña == contraseña and self.estado == True:
+            print("Inicio de sesion como docente correctamente para " + self.nombres + " " + self.apellidos)
+            return True
+        else:
+            print("Contraseña incorrecta o usuario inactivo")
+            return False
+
 
 #sobreescribe el metodo de Usuario, aqui se aplica el poliformismo
     def mostrar_info(self):
@@ -271,15 +266,15 @@ class Estudiante(Usuario):
 #consulta asistencia 
     def consultar_asistencia(self, asistencia):
         return asistencia.obtener_resumen()
-    
+
     def iniciar_sesion(self, contraseña):
-        return super().iniciar_sesion(contraseña)
-    
-    def cerrar_sesion(self):
-        super().cerrar_sesion()
-    
-    def actualizar_perfil(self, **kwargs):
-        super().actualizar_perfil(**kwargs)
+        if self.contraseña == contraseña and self.estado == True:
+            print("Inicio de sesion como estudiante correctamente para " + self.nombres + " " + self.apellidos)
+            return True
+        else:
+            print("Contraseña incorrecta o usuario inactivo")
+            return False
+
 #metodo sobreescrito para mostrar informacion del estudiante
     def mostrar_info(self):
         print("Estudiante: " + self.nombres + " " + self.apellidos)
@@ -338,13 +333,12 @@ class Administrador(Usuario):
         print("Administrador " + self.nombres + " ejecuto " + accion + " en el curso " + curso.nombre)
     
     def iniciar_sesion(self, contraseña):
-        return super().iniciar_sesion(contraseña)
-    
-    def cerrar_sesion(self):
-        super().cerrar_sesion()
-    
-    def actualizar_perfil(self, **kwargs):
-        super().actualizar_perfil(**kwargs)
+        if self.contraseña == contraseña and self.estado == True:
+            print("Inicio de sesion como administrador correctamente para " + self.nombres + " " + self.apellidos)
+            return True
+        else:
+            print("Contraseña incorrecta o usuario inactivo")
+            return False
 
 #metodo sobreescrito aplica polimorfismo 
     def mostrar_info(self):
