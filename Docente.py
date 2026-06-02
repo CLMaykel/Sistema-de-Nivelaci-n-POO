@@ -49,3 +49,28 @@ class Docente(Usuario):                           #se inicializan los atributos 
 
     def consultar_estudiantes(self, curso):
         return curso.lista_estudiantes
+#sobrecarga simulada con kwargs
+    def generar_reporte(self, **kwargs):
+        print("Reporte del docente: " + self.nombres + " " + self.apellidos)
+        print("Titulo: " + self.__titulo_profesional)
+        print("Especialidad: " + self.__especialidad)
+        if "periodo" in kwargs:
+            print("Periodo: " + kwargs["periodo"])
+        if "incluir_notas" in kwargs and kwargs["incluir_notas"] == True:
+            print("Notas registradas: " + str(len(self.__notas_registradas)))
+        else:
+            print("Notas registradas: " + str(len(self.__notas_registradas)))
+#método sobreescrito para iniciar sesión  
+    def iniciar_sesion(self, contraseña):
+        if self.contraseña == contraseña and self.estado == True:
+            print("Inicio de sesion como docente correctamente para " + self.nombres + " " + self.apellidos)
+            return True
+        else:
+            print("Contraseña incorrecta o usuario inactivo")
+            return False
+#sobreescribe el metodo de Usuario, aqui se aplica el poliformismo
+    def mostrar_info(self):
+        print("Docente: " + self.nombres + " " + self.apellidos)
+        print("Cedula: " + self.cedula)
+        print("Titulo profesional: " + self.__titulo_profesional)
+        print("Especialidad: " + self.__especialidad)
