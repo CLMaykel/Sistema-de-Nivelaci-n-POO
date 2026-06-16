@@ -1,4 +1,4 @@
-from Usuario import Usuario
+from usuario import Usuario
 class Estudiante(Usuario):
 
     def __init__(self, id_usuario, cedula, nombres, apellidos, correo, contraseña, telefono, tipo_documento, numero_documento, fecha_nacimiento, discapacidad=False):
