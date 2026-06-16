@@ -2,10 +2,10 @@
 # Este archivo es un módulo adicional y no modifica los archivos existentes.
 # una clase FabricaUsuario que crea instancias de Estudiante, Docente o Administrador.
 
-from Usuario import Usuario
-from Docente import Docente
-from Estudiante import Estudiante
-from Administrador import Administrador
+from usuario import Usuario
+from docente import Docente
+from estudiante import Estudiante
+from admin import Administrador
 
 
 class FabricaUsuario:
