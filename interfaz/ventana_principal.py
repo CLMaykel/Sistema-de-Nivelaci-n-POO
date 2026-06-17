@@ -10,14 +10,85 @@ from modelos.estudiante import Estudiante
 from servicios.sistema_nivelacion import SistemaNivelacion
 
 
-class VentanaPrincipal(tk.Tk):
+class VentanaLogin(tk.Tk):
 
     def __init__(self):
         super().__init__()
-        self.title("Sistema de Nivelacion ULEAM")
+        self.title("Login - Sistema de Nivelacion")
+        self.geometry("400x300")
+        self.minsize(400, 300)
+        self.resizable(False, False)
+        self.admin_autenticado = None
+        self.sistema = SistemaNivelacion()
+        self.sistema.cargar_datos_demo()
+        self._configurar_estilos()
+        self._crear_interfaz()
+
+    def _configurar_estilos(self):
+        self.configure(bg="#f4f6f8")
+        self.style = ttk.Style(self)
+        self.style.theme_use("clam")
+        self.style.configure("TFrame", background="#f4f6f8")
+        self.style.configure("Form.TFrame", background="#ffffff", relief="flat", borderwidth=0)
+        self.style.configure("TLabel", background="#f4f6f8", foreground="#1f2937", font=("Segoe UI", 10))
+        self.style.configure("Title.TLabel", background="#f4f6f8", foreground="#111827", font=("Segoe UI", 18, "bold"))
+        self.style.configure("TButton", font=("Segoe UI", 10), padding=8)
+
+    def _crear_interfaz(self):
+        contenedor = ttk.Frame(self, padding=40, style="Form.TFrame")
+        contenedor.pack(fill="both", expand=True)
+
+        titulo = ttk.Label(contenedor, text="Iniciar Sesión", style="Title.TLabel")
+        titulo.pack(pady=(0, 30))
+
+        ttk.Label(contenedor, text="Cédula", style="TLabel").pack(anchor="w", pady=(0, 5))
+        self.entrada_cedula = ttk.Entry(contenedor, width=30)
+        self.entrada_cedula.pack(fill="x", pady=(0, 20))
+
+        ttk.Label(contenedor, text="Contraseña", style="TLabel").pack(anchor="w", pady=(0, 5))
+        self.entrada_contraseña = ttk.Entry(contenedor, width=30, show="*")
+        self.entrada_contraseña.pack(fill="x", pady=(0, 30))
+
+        ttk.Button(contenedor, text="Ingresar", command=self._autenticar).pack(fill="x", pady=5)
+        
+        self.entrada_cedula.bind("<Return>", lambda _: self._autenticar())
+        self.entrada_contraseña.bind("<Return>", lambda _: self._autenticar())
+
+    def _autenticar(self):
+        cedula = self.entrada_cedula.get().strip()
+        contraseña = self.entrada_contraseña.get().strip()
+
+        if not cedula or not contraseña:
+            messagebox.showerror("Error", "Complete todos los campos")
+            return
+
+        admin_encontrado = None
+        for usuario in self.sistema.usuarios:
+            if isinstance(usuario, Administrador) and usuario.cedula == cedula:
+                admin_encontrado = usuario
+                break
+
+        if admin_encontrado is None:
+            messagebox.showerror("Error", "Administrador no encontrado")
+            return
+
+        if admin_encontrado.iniciar_sesion(contraseña):
+            self.admin_autenticado = admin_encontrado
+            self.destroy()
+        else:
+            messagebox.showerror("Error", "Contraseña incorrecta o usuario inactivo")
+
+
+class VentanaPrincipal(tk.Tk):
+
+    def __init__(self, admin):
+        super().__init__()
+        self.admin = admin
+        self.title(f"Bienvenido admin: {admin.nombres} {admin.apellidos}")
         self.geometry("1080x680")
         self.minsize(960, 620)
         self.sistema = SistemaNivelacion()
+        self.sistema.usuarios = [admin]
         self.reporte_activo_id = None
         self._configurar_estilos()
         self._crear_interfaz()
@@ -44,26 +115,23 @@ class VentanaPrincipal(tk.Tk):
 
         encabezado = ttk.Frame(contenedor)
         encabezado.pack(fill="x", pady=(0, 14))
-        ttk.Label(encabezado, text="Sistema de Nivelacion ULEAM", style="Title.TLabel").pack(side="left")
+        ttk.Label(encabezado, text=f"Bienvenido admin: {self.admin.nombres} {self.admin.apellidos}", style="Title.TLabel").pack(side="left")
         ttk.Button(encabezado, text="Cargar datos demo", command=self._cargar_demo).pack(side="right")
 
         self.tabs = ttk.Notebook(contenedor)
         self.tabs.pack(fill="both", expand=True)
 
         self.tab_inicio = ttk.Frame(self.tabs, padding=14)
-        self.tab_usuarios = ttk.Frame(self.tabs, padding=14)
         self.tab_cursos = ttk.Frame(self.tabs, padding=14)
         self.tab_carga = ttk.Frame(self.tabs, padding=14)
         self.tab_reportes = ttk.Frame(self.tabs, padding=14)
 
         self.tabs.add(self.tab_inicio, text="Inicio")
-        self.tabs.add(self.tab_usuarios, text="Usuarios")
         self.tabs.add(self.tab_cursos, text="Cursos")
         self.tabs.add(self.tab_carga, text="Carga academica")
         self.tabs.add(self.tab_reportes, text="Reportes")
 
         self._crear_tab_inicio()
-        self._crear_tab_usuarios()
         self._crear_tab_cursos()
         self._crear_tab_carga()
         self._crear_tab_reportes()
@@ -86,72 +154,8 @@ class VentanaPrincipal(tk.Tk):
 
         acciones = ttk.Frame(self.tab_inicio)
         acciones.pack(fill="x", pady=18)
-        ttk.Button(acciones, text="Registrar usuario", command=lambda: self.tabs.select(self.tab_usuarios)).pack(side="left", padx=(0, 8))
         ttk.Button(acciones, text="Crear curso", command=lambda: self.tabs.select(self.tab_cursos)).pack(side="left", padx=(0, 8))
         ttk.Button(acciones, text="Generar reporte", command=lambda: self.tabs.select(self.tab_reportes)).pack(side="left")
-
-    def _crear_tab_usuarios(self):
-        contenido = ttk.Frame(self.tab_usuarios)
-        contenido.pack(fill="both", expand=True)
-        formulario = ttk.Frame(contenido, style="Panel.TFrame", padding=14)
-        formulario.pack(side="left", fill="y", padx=(0, 12))
-        tabla_panel = ttk.Frame(contenido)
-        tabla_panel.pack(side="left", fill="both", expand=True)
-
-        self.tipo_usuario = tk.StringVar(value="Estudiante")
-        ttk.Label(formulario, text="Tipo", style="Panel.TLabel").grid(row=0, column=0, sticky="w")
-        tipo = ttk.Combobox(formulario, textvariable=self.tipo_usuario, values=["Estudiante", "Docente", "Administrador"], state="readonly", width=26)
-        tipo.grid(row=1, column=0, sticky="ew", pady=(2, 8))
-        tipo.bind("<<ComboboxSelected>>", lambda _event: self._actualizar_campos_usuario())
-
-        self.tipo_documento = tk.StringVar(value="Cedula")
-        ttk.Label(formulario, text="Tipo documento", style="Panel.TLabel").grid(row=2, column=0, sticky="w")
-        combo_documento = ttk.Combobox(
-            formulario,
-            textvariable=self.tipo_documento,
-            values=["Cedula", "Pasaporte"],
-            state="readonly",
-            width=26,
-        )
-        combo_documento.grid(row=3, column=0, sticky="ew", pady=(2, 8))
-
-        self.campos_usuario = {}
-        etiquetas = ["Cedula", "Nombres", "Apellidos", "Correo", "Contrasena", "Telefono"]
-        for fila, etiqueta in enumerate(etiquetas, start=2):
-            ttk.Label(formulario, text=etiqueta, style="Panel.TLabel").grid(row=fila * 2, column=0, sticky="w")
-            entrada = ttk.Entry(formulario, width=30, show="*" if etiqueta == "Contrasena" else "")
-            entrada.grid(row=fila * 2 + 1, column=0, sticky="ew", pady=(2, 8))
-            self.campos_usuario[etiqueta] = entrada
-
-        self.extra_usuario = ttk.Frame(formulario, style="Form.TFrame")
-        self.extra_usuario.grid(row=16, column=0, sticky="ew", pady=(0, 2))
-        self.extra_usuario.columnconfigure(0, weight=1)
-        ttk.Button(formulario, text="Guardar usuario", command=self._registrar_usuario).grid(row=17, column=0, sticky="ew", pady=(12, 0))
-
-        columnas = ("tipo", "cedula", "nombres", "correo", "detalle")
-        self.tabla_usuarios = self._crear_tabla(tabla_panel, columnas, ("Tipo", "Cedula", "Nombres", "Correo", "Detalle"))
-        self.tabla_usuarios.bind("<Double-1>", self._mostrar_detalle_usuario_seleccionado)
-        ttk.Button(tabla_panel, text="Ver detalle", command=self._mostrar_detalle_usuario_seleccionado).pack(anchor="e")
-        self._actualizar_campos_usuario()
-
-    def _actualizar_campos_usuario(self):
-        for widget in self.extra_usuario.winfo_children():
-            widget.destroy()
-        self.campos_extra_usuario = {}
-
-        tipo = self.tipo_usuario.get()
-        if tipo == "Docente":
-            campos = ["Titulo profesional", "Especialidad"]
-        elif tipo == "Administrador":
-            campos = ["Cargo"]
-        else:
-            campos = ["Fecha nacimiento"]
-
-        for indice, etiqueta in enumerate(campos):
-            ttk.Label(self.extra_usuario, text=etiqueta, style="Panel.TLabel").grid(row=indice * 2, column=0, sticky="w")
-            entrada = ttk.Entry(self.extra_usuario, width=30)
-            entrada.grid(row=indice * 2 + 1, column=0, sticky="ew", pady=(2, 8))
-            self.campos_extra_usuario[etiqueta] = entrada
 
     def _crear_tab_cursos(self):
         contenido = ttk.Frame(self.tab_cursos)
@@ -286,35 +290,6 @@ class VentanaPrincipal(tk.Tk):
         barra.pack(side="right", fill="y")
         return tabla
 
-    def _registrar_usuario(self):
-        try:
-            tipo = self.tipo_usuario.get()
-            datos = {
-                "cedula": self._valor(self.campos_usuario["Cedula"]),
-                "nombres": self._valor(self.campos_usuario["Nombres"]),
-                "apellidos": self._valor(self.campos_usuario["Apellidos"]),
-                "correo": self._valor(self.campos_usuario["Correo"]),
-                "contrasena": self._valor(self.campos_usuario["Contrasena"]),
-                "telefono": self._valor(self.campos_usuario["Telefono"]),
-            }
-            extras = {}
-            if tipo == "Docente":
-                extras["titulo_profesional"] = self._valor(self.campos_extra_usuario["Titulo profesional"])
-                extras["especialidad"] = self._valor(self.campos_extra_usuario["Especialidad"])
-            elif tipo == "Administrador":
-                extras["cargo"] = self._valor(self.campos_extra_usuario["Cargo"])
-            else:
-                extras["tipo_documento"] = self.tipo_documento.get()
-                extras["fecha_nacimiento"] = self._valor(self.campos_extra_usuario["Fecha nacimiento"])
-
-            self.sistema.registrar_usuario(tipo, **datos, **extras)
-            self._limpiar_campos(self.campos_usuario)
-            self._limpiar_campos(self.campos_extra_usuario)
-            self._actualizar_todo()
-            messagebox.showinfo("Usuario", "Usuario registrado correctamente")
-        except Exception as error:
-            messagebox.showerror("Usuario", str(error))
-
     def _registrar_aula(self):
         try:
             self.sistema.registrar_aula(
@@ -394,7 +369,6 @@ class VentanaPrincipal(tk.Tk):
 
     def _actualizar_todo(self):
         self._actualizar_metricas()
-        self._actualizar_usuarios()
         self._actualizar_registros_cursos()
         self._actualizar_cargas()
         self._actualizar_reportes()
@@ -403,15 +377,6 @@ class VentanaPrincipal(tk.Tk):
     def _actualizar_metricas(self):
         for clave, valor in self.sistema.resumen().items():
             self.metricas[clave].configure(text=str(valor))
-
-    def _actualizar_usuarios(self):
-        self._vaciar_tabla(self.tabla_usuarios)
-        self.objetos_usuarios = {}
-        for usuario in self.sistema.usuarios:
-            tipo = usuario.__class__.__name__
-            detalle = self._detalle_usuario(usuario)
-            item = self.tabla_usuarios.insert("", "end", values=(tipo, usuario.cedula, usuario.nombres + " " + usuario.apellidos, usuario.correo, detalle))
-            self.objetos_usuarios[item] = usuario
 
     def _actualizar_registros_cursos(self):
         self._vaciar_tabla(self.tabla_aulas)
@@ -428,72 +393,6 @@ class VentanaPrincipal(tk.Tk):
             cupo = str(curso.cupo_actual) + "/" + str(curso.cupo_maximo)
             item = self.tabla_cursos.insert("", "end", values=(curso.codigo, curso.nombre, docente, cupo))
             self.objetos_cursos[item] = curso
-
-    def _mostrar_detalle_usuario_seleccionado(self, _event=None):
-        seleccion = self.tabla_usuarios.selection()
-        if not seleccion:
-            return
-
-        usuario = self.objetos_usuarios.get(seleccion[0])
-        if usuario is not None:
-            self._mostrar_detalle_usuario(usuario)
-
-    def _mostrar_detalle_usuario(self, usuario):
-        if isinstance(usuario, Estudiante):
-            self._mostrar_detalle_estudiante(usuario)
-        elif isinstance(usuario, Docente):
-            self._mostrar_detalle_docente(usuario)
-        elif isinstance(usuario, Administrador):
-            self._mostrar_detalle_administrador(usuario)
-
-    def _mostrar_detalle_estudiante(self, estudiante):
-        ventana = self._crear_ventana_detalle("Detalle del estudiante")
-        cursos = self.sistema.obtener_cursos_estudiante(estudiante)
-        materias = ", ".join([curso.nombre for curso in cursos])
-        if not materias:
-            materias = "Sin cursos inscritos"
-
-        datos = [
-            ("ID", estudiante.id_usuario),
-            ("Nombres", estudiante.nombres + " " + estudiante.apellidos),
-            ("Cedula", estudiante.cedula),
-            ("Tipo documento", estudiante.tipo_documento),
-            ("Correo", estudiante.correo),
-            ("Telefono", estudiante.telefono),
-            ("Nacimiento", estudiante.fecha_nacimiento),
-            ("Estado nivelacion", estudiante.estado_nivelacion),
-            ("Materias inscritas", materias),
-        ]
-        self._llenar_detalle(ventana, datos)
-
-    def _mostrar_detalle_docente(self, docente):
-        ventana = self._crear_ventana_detalle("Detalle del docente")
-        cursos = [curso.nombre for curso in self.sistema.cursos if curso.docente == docente]
-        materias = ", ".join(cursos) if cursos else "Sin cursos asignados"
-        datos = [
-            ("ID", docente.id_usuario),
-            ("Nombres", docente.nombres + " " + docente.apellidos),
-            ("Cedula", docente.cedula),
-            ("Correo", docente.correo),
-            ("Telefono", docente.telefono),
-            ("Titulo", docente.titulo_profesional),
-            ("Especialidad", docente.especialidad),
-            ("Cursos asignados", materias),
-        ]
-        self._llenar_detalle(ventana, datos)
-
-    def _mostrar_detalle_administrador(self, admin):
-        ventana = self._crear_ventana_detalle("Detalle del administrador")
-        datos = [
-            ("ID", admin.id_usuario),
-            ("Nombres", admin.nombres + " " + admin.apellidos),
-            ("Cedula", admin.cedula),
-            ("Correo", admin.correo),
-            ("Telefono", admin.telefono),
-            ("Cargo", admin.cargo),
-            ("Estado", "Activo" if admin.estado else "Inactivo"),
-        ]
-        self._llenar_detalle(ventana, datos)
 
     def _mostrar_detalle_curso_seleccionado(self, _event=None):
         seleccion = self.tabla_cursos.selection()
@@ -695,15 +594,6 @@ class VentanaPrincipal(tk.Tk):
             return objeto.nombre
         return str(objeto)
 
-    def _detalle_usuario(self, usuario):
-        if isinstance(usuario, Docente):
-            return usuario.especialidad
-        if isinstance(usuario, Estudiante):
-            return usuario.estado_nivelacion
-        if isinstance(usuario, Administrador):
-            return usuario.cargo
-        return ""
-
     def _valor(self, entrada):
         valor = entrada.get().strip()
         if not valor:
@@ -720,5 +610,18 @@ class VentanaPrincipal(tk.Tk):
 
 
 def iniciar_interfaz():
-    app = VentanaPrincipal()
-    app.mainloop()
+    login = VentanaLogin()
+    login.mainloop()
+    
+    if login.admin_autenticado:
+        # Copiar los datos del sistema del login a la ventana principal
+        app = VentanaPrincipal(login.admin_autenticado)
+        # Copiar todos los datos cargados en el demo al nuevo sistema
+        app.sistema.usuarios = login.sistema.usuarios
+        app.sistema.aulas = login.sistema.aulas
+        app.sistema.horarios = login.sistema.horarios
+        app.sistema.cursos = login.sistema.cursos
+        app.sistema.cargas_academicas = login.sistema.cargas_academicas
+        app.sistema.reportes = login.sistema.reportes
+        app._actualizar_todo()
+        app.mainloop()
