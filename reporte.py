@@ -1,6 +1,6 @@
-from iexportable import iExportable
+from iexportable import IExportable
 
-class Reporte (iExportable):
+class Reporte(IExportable):
 
     def __init__(self, id_reporte, tipo_reporte, fecha_generacion, periodo, descripcion, exportador):
         self.__id_reporte = id_reporte
@@ -33,6 +33,6 @@ class Reporte (iExportable):
         print("Periodo: " + self.__periodo)
         print("Fecha de generacion: " + self.__fecha_generacion)
 
-    def exportar(self):
+    def exportar(self, datos=None):
         datos = {"tipo": self.__tipo_reporte, "periodo": self.__periodo}
         self.__exportador.exportar(datos) 
