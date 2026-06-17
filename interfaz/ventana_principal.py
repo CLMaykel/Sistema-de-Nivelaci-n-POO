@@ -150,26 +150,32 @@ class VentanaPrincipal(tk.Tk):
     def _crear_tab_cursos(self):
         contenido = ttk.Frame(self.tab_cursos)
         contenido.pack(fill="both", expand=True)
-        formularios = ttk.Frame(contenido)
+        formularios = ttk.Frame(contenido, width=280)
         formularios.pack(side="left", fill="y", padx=(0, 12))
+        formularios.pack_propagate(False)
         registros = ttk.LabelFrame(contenido, text="Registros", padding=10)
         registros.pack(side="left", fill="both", expand=True)
 
-        aula_panel = ttk.LabelFrame(formularios, text="Aula", padding=12)
-        aula_panel.pack(fill="x", pady=(0, 10))
+        gestor_formularios = ttk.Notebook(formularios)
+        gestor_formularios.pack(fill="both", expand=True)
+
+        aula_panel = ttk.Frame(gestor_formularios, padding=12, style="Form.TFrame")
+        curso_panel = ttk.Frame(gestor_formularios, padding=12, style="Form.TFrame")
+        inscripcion_panel = ttk.Frame(gestor_formularios, padding=12, style="Form.TFrame")
+
+        gestor_formularios.add(aula_panel, text="Aula")
+        gestor_formularios.add(curso_panel, text="Curso")
+        gestor_formularios.add(inscripcion_panel, text="Inscripcion")
+
         self.campos_aula = self._crear_campos(aula_panel, ["Codigo", "Nombre", "Capacidad", "Piso", "Edificio"])
         ttk.Button(aula_panel, text="Guardar aula", command=self._registrar_aula).pack(fill="x", pady=(8, 0))
 
-        curso_panel = ttk.LabelFrame(formularios, text="Curso", padding=12)
-        curso_panel.pack(fill="x", pady=(0, 10))
         self.campos_curso = self._crear_campos(curso_panel, ["Codigo", "Nombre", "Nivel", "Paralelo", "Cupo maximo"])
         self.combo_docente = self._crear_combo(curso_panel, "Docente")
         self.combo_aula = self._crear_combo(curso_panel, "Aula")
         self.campos_horario = self._crear_campos(curso_panel, ["Dia", "Hora inicio", "Hora fin", "Modalidad", "Grupo"])
         ttk.Button(curso_panel, text="Guardar curso", command=self._registrar_curso).pack(fill="x", pady=(8, 0))
 
-        inscripcion_panel = ttk.LabelFrame(formularios, text="Inscripcion", padding=12)
-        inscripcion_panel.pack(fill="x")
         self.combo_curso = self._crear_combo(inscripcion_panel, "Curso")
         self.combo_estudiante = self._crear_combo(inscripcion_panel, "Estudiante")
         ttk.Button(inscripcion_panel, text="Inscribir estudiante", command=self._inscribir_estudiante).pack(fill="x", pady=(8, 0))
