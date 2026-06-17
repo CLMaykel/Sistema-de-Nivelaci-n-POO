@@ -5,6 +5,7 @@ class CargaAcademica:
         self.__estudiante = estudiante
         self.__periodo = periodo
         self.__total_asignaturas = total_asignaturas
+        # Se almacenan los créditos totales del período académico del estudiante
         self.__total_creditos = total_creditos
         self.__estado = estado
 
@@ -34,6 +35,7 @@ class CargaAcademica:
 
     @total_creditos.setter
     def total_creditos(self, valor):
+        # Validación: los créditos no pueden ser negativos, solo se actualiza si son válidos
         if valor < 0:
             print("Los creditos no pueden ser negativos")
         else:
@@ -47,4 +49,3 @@ class CargaAcademica:
         print("Carga academica de " + self.__estudiante.nombres + " " + self.__estudiante.apellidos)
         print("Periodo: " + self.__periodo)
         print(str(self.__total_asignaturas) + " asignaturas " + str(self.__total_creditos) + " creditos")
-
