@@ -11,9 +11,11 @@ from servicios.fabrica import FabricaUsuario
 
 
 class SistemaNivelacion:
+    CREDITOS_POR_CURSO = 4
 
     def __init__(self):
         self.fabrica = FabricaUsuario()
+        self.periodo_actual = "2026-1"
         self.usuarios = []
         self.aulas = []
         self.horarios = []
@@ -102,10 +104,23 @@ class SistemaNivelacion:
         estudiante.estado_nivelacion = "En Curso"
         return curso
 
-    def registrar_carga_academica(self, estudiante, periodo, total_asignaturas, total_creditos):
-        carga = CargaAcademica(len(self.cargas_academicas) + 1, estudiante, periodo, int(total_asignaturas), int(total_creditos))
+    def registrar_carga_academica(self, estudiante):
+        cursos_estudiante = self.obtener_cursos_estudiante(estudiante)
+        total_asignaturas = len(cursos_estudiante)
+        if total_asignaturas == 0:
+            raise ValueError("El estudiante no tiene cursos inscritos")
+
+        for carga in self.cargas_academicas:
+            if carga.estudiante == estudiante and carga.periodo == self.periodo_actual:
+                raise ValueError("El estudiante ya tiene una carga academica registrada en el periodo actual")
+
+        total_creditos = total_asignaturas * self.CREDITOS_POR_CURSO
+        carga = CargaAcademica(len(self.cargas_academicas) + 1, estudiante, self.periodo_actual, total_asignaturas, total_creditos)
         self.cargas_academicas.append(carga)
         return carga
+
+    def obtener_cursos_estudiante(self, estudiante):
+        return [curso for curso in self.cursos if estudiante in curso.lista_estudiantes]
 
     def generar_reporte(self, tipo_reporte, fecha_generacion, periodo, descripcion, formato):
         exportador = ExportarExcel() if formato == "Excel" else ExportarPDF()
@@ -190,5 +205,5 @@ class SistemaNivelacion:
         curso = self.registrar_curso("POO-001", "Programacion Orientada a Objetos", "Nivelacion", "A", 30, docente, horario, aula)
         self.inscribir_estudiante(curso, estudiante1)
         self.inscribir_estudiante(curso, estudiante2)
-        self.registrar_carga_academica(estudiante1, "2026-1", 5, 20)
+        self.registrar_carga_academica(estudiante1)
         self.generar_reporte("Asistencia", "2026-06-17", "2026-1", "Reporte general de asistencia", "PDF")

@@ -214,8 +214,9 @@ class VentanaPrincipal(tk.Tk):
         formulario = ttk.Frame(contenido, style="Panel.TFrame", padding=14)
         formulario.pack(side="left", fill="y", padx=(0, 12))
         self.combo_estudiante_carga = self._crear_combo(formulario, "Estudiante")
-        self.campos_carga = self._crear_campos(formulario, ["Periodo", "Total asignaturas", "Total creditos"])
-        ttk.Button(formulario, text="Guardar carga", command=self._registrar_carga).pack(fill="x", pady=(8, 0))
+        ttk.Label(formulario, text="Periodo actual", style="Panel.TLabel").pack(anchor="w")
+        ttk.Label(formulario, text=self.sistema.periodo_actual, style="Panel.TLabel").pack(anchor="w", pady=(2, 12))
+        ttk.Button(formulario, text="Generar carga", command=self._registrar_carga).pack(fill="x", pady=(8, 0))
 
         panel_cargas = ttk.Frame(contenido)
         panel_cargas.pack(side="left", fill="both", expand=True)
@@ -357,13 +358,7 @@ class VentanaPrincipal(tk.Tk):
     def _registrar_carga(self):
         try:
             estudiante = self._objeto_seleccionado(self.combo_estudiante_carga, self.sistema.listar_estudiantes())
-            self.sistema.registrar_carga_academica(
-                estudiante,
-                self._valor(self.campos_carga["Periodo"]),
-                self._valor(self.campos_carga["Total asignaturas"]),
-                self._valor(self.campos_carga["Total creditos"]),
-            )
-            self._limpiar_campos(self.campos_carga)
+            self.sistema.registrar_carga_academica(estudiante)
             self._actualizar_todo()
         except Exception as error:
             messagebox.showerror("Carga academica", str(error))
