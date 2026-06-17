@@ -1,4 +1,4 @@
-from detalle_asistencia import DetalleAsistencia
+from modelos.detalle_asistencia import DetalleAsistencia
 
 class Asistencia:
 

@@ -1,4 +1,4 @@
-from usuario import Usuario
+from modelos.usuario import Usuario
 class Docente(Usuario):                           #se inicializan los atributos heredados y propios
     def __init__(self, id_usuario, cedula, nombres, apellidos, correo, contraseña, telefono, titulo_profesional, especialidad):
         super().__init__(id_usuario, cedula, nombres, apellidos, correo, contraseña, telefono) 

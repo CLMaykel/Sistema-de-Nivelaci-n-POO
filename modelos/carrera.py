@@ -1,4 +1,4 @@
-from facultad import Facultad
+from modelos.facultad import Facultad
 
 class Carrera:
 

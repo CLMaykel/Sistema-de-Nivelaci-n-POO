@@ -1,4 +1,4 @@
-from iexportable import IExportable
+from modelos.iexportable import IExportable
 
 class Reporte(IExportable):
 

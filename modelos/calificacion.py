@@ -1,4 +1,4 @@
-from detalle_calificacion import DetalleCalificacion
+from modelos.detalle_calificacion import DetalleCalificacion
 class Calificacion:
 
     nota_minima = 7.0

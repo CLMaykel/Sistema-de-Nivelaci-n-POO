@@ -1,7 +1,7 @@
 #importamos las clases de los diferentes tipos de usuarios
-from docente import Docente
-from estudiante import Estudiante
-from admin import Administrador
+from modelos.admin import Administrador
+from modelos.docente import Docente
+from modelos.estudiante import Estudiante
 
 #hacemos uso del patrón Factory Method para crear una fábrica de usuarios
 class FabricaUsuario:
