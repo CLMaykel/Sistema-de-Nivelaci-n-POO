@@ -36,9 +36,9 @@ class VentanaLogin(tk.Tk):
         titulo = ttk.Label(contenedor, text="Iniciar Sesión", style="Title.TLabel")
         titulo.pack(pady=(0, 30))
 
-        ttk.Label(contenedor, text="Cédula", style="TLabel").pack(anchor="w", pady=(0, 5))
-        self.entrada_cedula = ttk.Entry(contenedor, width=30)
-        self.entrada_cedula.pack(fill="x", pady=(0, 20))
+        ttk.Label(contenedor, text="Correo", style="TLabel").pack(anchor="w", pady=(0, 5))
+        self.entrada_correo = ttk.Entry(contenedor, width=30)
+        self.entrada_correo.pack(fill="x", pady=(0, 20))
 
         ttk.Label(contenedor, text="Contraseña", style="TLabel").pack(anchor="w", pady=(0, 5))
         self.entrada_contraseña = ttk.Entry(contenedor, width=30, show="*")
@@ -49,16 +49,16 @@ class VentanaLogin(tk.Tk):
         ttk.Button(boton_frame, text="(Iniciar sesión)", command=self._autenticar).pack(fill="x")
 
     def _autenticar(self):
-        cedula = self.entrada_cedula.get().strip()
+        correo = self.entrada_correo.get().strip()
         contraseña = self.entrada_contraseña.get().strip()
 
-        if not cedula or not contraseña:
+        if not correo or not contraseña:
             messagebox.showerror("Error", "Complete todos los campos")
             return
 
         admin_encontrado = None
         for usuario in self.sistema.usuarios:
-            if isinstance(usuario, Administrador) and usuario.cedula == cedula:
+            if isinstance(usuario, Administrador) and usuario.correo == correo:
                 admin_encontrado = usuario
                 break
 
@@ -340,5 +340,4 @@ def iniciar_interfaz():
         app.mainloop()
 
 
-        app.mainloop()
 
