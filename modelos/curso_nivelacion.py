@@ -51,6 +51,14 @@ class CursoNivelacion:
         return self.__docente
 
     @property
+    def horario(self):
+        return self.__horario
+
+    @property
+    def aula(self):
+        return self.__aula
+
+    @property
     def lista_estudiantes(self):
         return self.__lista_estudiantes
 

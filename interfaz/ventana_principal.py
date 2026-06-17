@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 
 from modelos.admin import Administrador
+from modelos.aula import Aula
+from modelos.curso_nivelacion import CursoNivelacion
 from modelos.docente import Docente
 from modelos.estudiante import Estudiante
 from servicios.sistema_nivelacion import SistemaNivelacion
@@ -188,6 +190,8 @@ class VentanaPrincipal(tk.Tk):
             ("tipo", "codigo", "nombre", "detalle", "estado"),
             ("Tipo", "Codigo", "Nombre", "Detalle", "Estado"),
         )
+        self.tabla_registros_cursos.bind("<Double-1>", self._mostrar_detalle_registro)
+        ttk.Button(registros, text="Ver detalle", command=self._mostrar_detalle_registro).pack(anchor="e")
 
     def _crear_tab_carga(self):
         contenido = ttk.Frame(self.tab_carga)
@@ -380,15 +384,84 @@ class VentanaPrincipal(tk.Tk):
 
     def _actualizar_registros_cursos(self):
         self._vaciar_tabla(self.tabla_registros_cursos)
+        self.objetos_registros_cursos = {}
         for aula in self.sistema.aulas:
             detalle = "Capacidad " + str(aula.capacidad) + " - " + aula.edificio
-            self.tabla_registros_cursos.insert("", "end", values=("Aula", aula.codigo, aula.nombre, detalle, "Disponible"))
+            item = self.tabla_registros_cursos.insert("", "end", values=("Aula", aula.codigo, aula.nombre, detalle, "Disponible"))
+            self.objetos_registros_cursos[item] = aula
 
         for curso in self.sistema.cursos:
             docente = curso.docente.nombres + " " + curso.docente.apellidos
             cupo = str(curso.cupo_actual) + "/" + str(curso.cupo_maximo)
             detalle = "Docente: " + docente
-            self.tabla_registros_cursos.insert("", "end", values=("Curso", curso.codigo, curso.nombre, detalle, cupo))
+            item = self.tabla_registros_cursos.insert("", "end", values=("Curso", curso.codigo, curso.nombre, detalle, cupo))
+            self.objetos_registros_cursos[item] = curso
+
+    def _mostrar_detalle_registro(self, _event=None):
+        seleccion = self.tabla_registros_cursos.selection()
+        if not seleccion:
+            return
+
+        objeto = self.objetos_registros_cursos.get(seleccion[0])
+        if isinstance(objeto, CursoNivelacion):
+            self._mostrar_detalle_curso(objeto)
+        elif isinstance(objeto, Aula):
+            self._mostrar_detalle_aula(objeto)
+
+    def _mostrar_detalle_curso(self, curso):
+        ventana = self._crear_ventana_detalle("Detalle del curso")
+        horario = curso.horario
+        aula = curso.aula
+        docente = curso.docente.nombres + " " + curso.docente.apellidos
+        estudiantes = ", ".join([est.nombres + " " + est.apellidos for est in curso.lista_estudiantes])
+        if not estudiantes:
+            estudiantes = "Sin estudiantes inscritos"
+
+        datos = [
+            ("Codigo", curso.codigo),
+            ("Nombre", curso.nombre),
+            ("Nivel", curso.nivel),
+            ("Paralelo", curso.paralelo),
+            ("Cupo", str(curso.cupo_actual) + "/" + str(curso.cupo_maximo)),
+            ("Estado", "Abierto" if curso.estado else "Cerrado"),
+            ("Docente", docente),
+            ("Aula", aula.nombre + " - " + aula.edificio),
+            ("Horario", horario.dia + " de " + horario.hora_inicio + " a " + horario.hora_fin),
+            ("Modalidad", horario.modalidad),
+            ("Grupo", horario.grupo),
+            ("Estudiantes", estudiantes),
+        ]
+        self._llenar_detalle(ventana, datos)
+
+    def _mostrar_detalle_aula(self, aula):
+        ventana = self._crear_ventana_detalle("Detalle del aula")
+        datos = [
+            ("Codigo", aula.codigo),
+            ("Nombre", aula.nombre),
+            ("Capacidad", aula.capacidad),
+            ("Piso", aula.piso),
+            ("Edificio", aula.edificio),
+            ("Estado", "Disponible" if aula.estado else "No disponible"),
+        ]
+        self._llenar_detalle(ventana, datos)
+
+    def _crear_ventana_detalle(self, titulo):
+        ventana = tk.Toplevel(self)
+        ventana.title(titulo)
+        ventana.geometry("460x360")
+        ventana.minsize(420, 300)
+        ventana.configure(bg="#f4f6f8")
+        return ventana
+
+    def _llenar_detalle(self, ventana, datos):
+        contenedor = ttk.Frame(ventana, padding=16, style="Form.TFrame")
+        contenedor.pack(fill="both", expand=True)
+
+        for fila, (etiqueta, valor) in enumerate(datos):
+            ttk.Label(contenedor, text=etiqueta + ":", style="Panel.TLabel").grid(row=fila, column=0, sticky="nw", padx=(0, 10), pady=4)
+            ttk.Label(contenedor, text=str(valor), style="Panel.TLabel", wraplength=300).grid(row=fila, column=1, sticky="nw", pady=4)
+
+        contenedor.columnconfigure(1, weight=1)
 
     def _actualizar_cargas(self):
         self._vaciar_tabla(self.tabla_cargas)

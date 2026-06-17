@@ -27,6 +27,10 @@ class Aula:
         return self.__capacidad
 
     @property
+    def piso(self):
+        return self.__piso
+
+    @property
     def edificio(self):
         return self.__edificio
 

@@ -30,6 +30,10 @@ class Horario:
         return self.__modalidad
 
     @property
+    def grupo(self):
+        return self.__grupo
+
+    @property
     def aula(self):
         return self.__aula
 
