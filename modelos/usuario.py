@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-class Usuario(ABC):
+class Usuario(ABC):    #Principio de sustitución de Liskov
     contador = 0      #variable de clase que cuenta cuantos usuarios se crean
     def __init__(self, id_usuario, cedula, nombres, apellidos, correo, contraseña, telefono, estado=True):
         self.__id_usuario = id_usuario     #atributos privados
@@ -115,5 +115,5 @@ class Usuario(ABC):
 
 #Método abstracto que será sobreescrito en las clases hijas aplicando poliformismo
     @abstractmethod
-    def mostrar_info(self):
-        pass
+    def mostrar_info(self):    #Este método no sabe ni le importa que subclase recibe. 
+        pass                   #Solo sabe que todo usuario tiene mostrar_info()
