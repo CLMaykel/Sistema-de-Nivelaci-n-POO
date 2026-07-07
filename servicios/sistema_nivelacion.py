@@ -144,7 +144,6 @@ class SistemaNivelacion:
         if total_asignaturas == 0:
             raise ValueError("El estudiante no tiene cursos inscritos")
 
-        # Iteración sobre los valores del diccionario de cargas
         for carga in self.cargas_academicas.values():
             if carga.estudiante == estudiante and carga.periodo == self.periodo_actual:
                 raise ValueError("El estudiante ya tiene una carga academica registrada en el periodo actual")
@@ -156,7 +155,7 @@ class SistemaNivelacion:
         return carga
 
     def obtener_cursos_estudiante(self, estudiante):
-        return [curso for curso in self.cursos if estudiante in curso.lista_estudiantes]
+        return [curso for curso in self.cursos.values() if estudiante in curso.lista_estudiantes]
 
     def listar_periodos(self):
         return self.periodos_disponibles
