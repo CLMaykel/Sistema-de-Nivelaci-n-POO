@@ -115,8 +115,9 @@ class SistemaNivelacion:
         return horario
 
     def registrar_curso(self, codigo, nombre, nivel, paralelo, cupo_maximo, docente, horario, aula):
+        id_curso = len(self.cursos) + 1
         curso = CursoNivelacion(
-            len(self.cursos) + 1,
+            id_curso,
             codigo,
             nombre,
             nivel,
@@ -126,7 +127,7 @@ class SistemaNivelacion:
             horario,
             aula,
         )
-        self.cursos.append(curso)
+        self.cursos[id_curso] = curso
         return curso
 
     def inscribir_estudiante(self, curso, estudiante):
