@@ -17,18 +17,26 @@ from BaseD import ConexionDB  # <--- Aquí importamos tu clase de base de datos
 #centralizando toda la información y operaciones del sistema.
 
 class SistemaNivelacion:
+
+# ... (tus otros imports de modelos) ...
+
     CREDITOS_POR_CURSO = 4
 
     def __init__(self):
         self.fabrica = FabricaUsuario()
         self.periodo_actual = "2026-1"
-        self.periodos_disponibles = [self.periodo_actual]
-        self.usuarios = []
-        self.aulas = []
-        self.horarios = []
-        self.cursos = []
-        self.cargas_academicas = []
-        self.reportes = []
+        self.periodos_disponibles = [self.periodo_actual] 
+        
+        # Instanciamos la conexión a la base de datos
+        self.db = ConexionDB()
+        
+        self.usuarios = {}
+        self.aulas = {}
+        self.horarios = {}
+        self.cursos = {}
+        self.cargas_academicas = {}
+        self.reportes = {}
+
 
     def registrar_usuario(self, tipo_usuario, cedula, nombres, apellidos, correo, contrasena, telefono, **datos):
         # Se genera un ID único basado en la cantidad de usuarios registrados actualmente
