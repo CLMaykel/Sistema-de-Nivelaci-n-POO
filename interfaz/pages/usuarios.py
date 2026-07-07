@@ -44,10 +44,48 @@ def _formulario_estudiante(sistema):
             st.error(str(error))
 
 
+def _formulario_docente(sistema):
+    st.subheader("Registrar docente")
+
+    with st.form("form_docente"):
+        cedula = st.text_input("Cedula", key="doc_cedula")
+        nombres = st.text_input("Nombres", key="doc_nombres")
+        apellidos = st.text_input("Apellidos", key="doc_apellidos")
+        correo = st.text_input("Correo", key="doc_correo")
+        contrasena = st.text_input("Contrasena", type="password", key="doc_contrasena")
+        telefono = st.text_input("Telefono", key="doc_telefono")
+        titulo_profesional = st.text_input("Titulo profesional")
+        especialidad = st.text_input("Especialidad")
+
+        enviado = st.form_submit_button("Registrar docente")
+
+    if enviado:
+        try:
+            if not all([cedula, nombres, apellidos, correo, contrasena, telefono, titulo_profesional, especialidad]):
+                raise ValueError("Complete todos los campos obligatorios")
+
+            docente = sistema.registrar_usuario(
+                "Docente",
+                cedula.strip(),
+                nombres.strip(),
+                apellidos.strip(),
+                correo.strip(),
+                contrasena.strip(),
+                telefono.strip(),
+                titulo_profesional=titulo_profesional.strip(),
+                especialidad=especialidad.strip(),
+            )
+            st.success(f"Docente registrado: {docente.nombres} {docente.apellidos}")
+        except Exception as error:
+            st.error(str(error))
+
+
 def mostrar_usuarios(sistema):
     st.title("Usuarios")
 
     _formulario_estudiante(sistema)
+    st.divider()
+    _formulario_docente(sistema)
 
     st.divider()
     st.subheader("Usuarios registrados")
