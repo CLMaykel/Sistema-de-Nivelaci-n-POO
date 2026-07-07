@@ -220,8 +220,9 @@ class SistemaNivelacion:
             "cargas": len(self.cargas_academicas),
             "reportes": len(self.reportes),
         }
-
+    # Carga datos de prueba para demostrar el funcionamiento.
     def cargar_datos_demo(self):
+        
         if self.usuarios or self.aulas or self.cursos:
             return
 
