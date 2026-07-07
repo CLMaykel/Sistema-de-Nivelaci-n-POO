@@ -165,15 +165,17 @@ class SistemaNivelacion:
             raise ValueError("Seleccione un periodo valido")
         exportador = ExportarExcel() if formato == "Excel" else ExportarPDF()
         fecha_generacion = date.today().isoformat()
+        
+        id_reporte = len(self.reportes) + 1
         reporte = Reporte(
-            len(self.reportes) + 1,
+            id_reporte,
             tipo_reporte,
             fecha_generacion,
             periodo,
             descripcion,
             exportador,
         )
-        self.reportes.append(reporte)
+        self.reportes[id_reporte] = reporte
         return reporte
 
     def listar_docentes(self):
