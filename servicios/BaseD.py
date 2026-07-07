@@ -1,11 +1,14 @@
 import pyodbc
+# Clase encargada de administrar la conexión con la base de datos.
 class ConexionDB:
     def __init__(self):
+        # Nombre del servidor donde está instalado SQL Server.
         self.server = "localhost"  
+        # Nombre de la base de datos a la que se desea conectar.
         self.database = "PROYECTOPOO"
         
         self.driver = "{ODBC Driver 17 for SQL Server}"
-        
+        # Variable donde se almacenará la conexión con SQL Server.
         self.conn = None
         self.cursor = None
         
