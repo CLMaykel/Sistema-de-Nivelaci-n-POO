@@ -62,7 +62,7 @@ class SistemaNivelacion:
     def registrar_usuario(self, tipo_usuario, cedula, nombres, apellidos, correo, contrasena, telefono, **datos):
         # Genera un ID automático.
         id_usuario = len(self.usuarios) + 1
-
+        # Si es un docente.
         if tipo_usuario == "Docente":
             usuario = self.fabrica.crear_usuario(
                 "Docente",
@@ -76,6 +76,7 @@ class SistemaNivelacion:
                 datos.get("titulo_profesional", ""),
                 datos.get("especialidad", ""),
             )
+        # Si es un estudiante.
         elif tipo_usuario == "Estudiante":
             usuario = self.fabrica.crear_usuario(
                 "Estudiante",
@@ -90,8 +91,10 @@ class SistemaNivelacion:
                 datos.get("fecha_nacimiento", ""),
                 datos.get("discapacidad", False),
             )
+        # Si es un administrador.
         elif tipo_usuario == "Administrador":
             # Uso de .values() para iterar sobre los elementos del diccionario
+            # Cuenta cuántos administradores existen.
             cantidad_admins = sum(1 for u in self.usuarios.values() if isinstance(u, Administrador))
             usuario = self.fabrica.crear_usuario(
                 "Administrador",
@@ -105,9 +108,10 @@ class SistemaNivelacion:
                 cantidad_admins + 1,
                 datos.get("cargo", ""),
             )
+         # Si el tipo no existe.
         else:
             raise ValueError("Tipo de usuario no valido")
-
+         # Guarda el usuario en el diccionario.
         self.usuarios[id_usuario] = usuario
         return usuario
 
