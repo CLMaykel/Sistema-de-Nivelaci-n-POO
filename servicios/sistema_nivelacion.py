@@ -113,20 +113,25 @@ class SistemaNivelacion:
             raise ValueError("Tipo de usuario no valido")
          # Guarda el usuario en el diccionario.
         self.usuarios[id_usuario] = usuario
+        # Devuelve el objeto creado.
         return usuario
-
+    # Registra un aula.
     def registrar_aula(self, codigo, nombre, capacidad, piso, edificio):
+        # Genera un ID.
         id_aula = len(self.aulas) + 1
+        # Crea el aula.
         aula = Aula(id_aula, codigo, nombre, int(capacidad), int(piso), edificio)
+        # Guarda el aula.
         self.aulas[id_aula] = aula
         return aula
-
+     # Registra un horario.
     def registrar_horario(self, dia, hora_inicio, hora_fin, modalidad, grupo, aula):
+         # Genera un ID.
         id_horario = len(self.horarios) + 1
         horario = Horario(id_horario, dia, hora_inicio, hora_fin, modalidad, grupo, aula)
         self.horarios[id_horario] = horario
         return horario
-
+     # Registra un curso.
     def registrar_curso(self, codigo, nombre, nivel, paralelo, cupo_maximo, docente, horario, aula):
         id_curso = len(self.cursos) + 1
         curso = CursoNivelacion(
