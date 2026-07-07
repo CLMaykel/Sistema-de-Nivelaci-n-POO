@@ -3,8 +3,41 @@ import streamlit as st
 from interfaz.components.tables import aula_to_dict
 
 
+def _formulario_aula(sistema):
+    st.subheader("Registrar aula")
+
+    with st.form("form_aula"):
+        codigo = st.text_input("Codigo")
+        nombre = st.text_input("Nombre")
+        capacidad = st.number_input("Capacidad", min_value=1, step=1)
+        piso = st.number_input("Piso", min_value=0, step=1)
+        edificio = st.text_input("Edificio")
+
+        enviado = st.form_submit_button("Registrar aula")
+
+    if enviado:
+        try:
+            if not all([codigo, nombre, edificio]):
+                raise ValueError("Complete todos los campos obligatorios")
+
+            aula = sistema.registrar_aula(
+                codigo.strip(),
+                nombre.strip(),
+                int(capacidad),
+                int(piso),
+                edificio.strip(),
+            )
+            st.success(f"Aula registrada: {aula.nombre}")
+        except Exception as error:
+            st.error(str(error))
+
+
 def mostrar_aulas(sistema):
     st.title("Aulas")
+
+    _formulario_aula(sistema)
+
+    st.divider()
     st.subheader("Aulas registradas")
 
     if not sistema.aulas:
