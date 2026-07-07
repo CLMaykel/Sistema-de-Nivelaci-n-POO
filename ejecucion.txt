@@ -1,3 +1,5 @@
 abrir terminal en python:
 Crtl + shift + Ñ
 
+entrar a la carpeta:
+cd "Sistema-de-Nivelaci-n-POO-main"
