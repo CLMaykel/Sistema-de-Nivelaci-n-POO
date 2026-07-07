@@ -225,7 +225,7 @@ class SistemaNivelacion:
         
         if self.usuarios or self.aulas or self.cursos:
             return
-
+        # Registra un docente.
         docente = self.registrar_usuario(
             "Docente",
             "1300001111",
@@ -237,6 +237,7 @@ class SistemaNivelacion:
             titulo_profesional="Magister en Software",
             especialidad="Programacion OO",
         )
+        # Registra estudiantes
         estudiante1 = self.registrar_usuario(
             "Estudiante",
             "1300002222",
@@ -259,6 +260,7 @@ class SistemaNivelacion:
             tipo_documento="Cedula",
             fecha_nacimiento="2004-07-22",
         )
+        # Registra un administrador.
         self.registrar_usuario(
             "Administrador",
             "1300004444",
@@ -269,12 +271,15 @@ class SistemaNivelacion:
             "0993456789",
             cargo="Director de Nivelacion",
         )
-
+        # Registra un aula.
         aula = self.registrar_aula("A101", "Aula 101", 35, 1, "Bloque A")
+        # Registra un horario.
         horario = self.registrar_horario("Lunes", "08:00", "10:00", "Presencial", "A", aula)
+        # Registra un curso.
         curso = self.registrar_curso("POO-001", "Programacion Orientada a Objetos", "Nivelacion", "A", 30, docente, horario, aula)
-        
+        # Inscribe estudiantes.
         self.inscribir_estudiante(curso, estudiante1)
         self.inscribir_estudiante(curso, estudiante2)
+        # Registra la carga académica.
         self.registrar_carga_academica(estudiante1)
         self.generar_reporte("Asistencia", "2026-1", "Reporte general de asistencia", "PDF")
