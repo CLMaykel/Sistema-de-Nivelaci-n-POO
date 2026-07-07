@@ -14,7 +14,7 @@ Comando: `streamlit run interfaz/app.py`
 | HU-01 | Estructura base del frontend | hecho |
 | HU-02 | Estado global (state.py) | hecho |
 | HU-03 | Dashboard principal | hecho |
-| HU-04 | Menu lateral | pendiente |
+| HU-04 | Menu lateral | hecho |
 | HU-05 | Listar usuarios | pendiente |
 | HU-06 | Registrar estudiante | pendiente |
 | HU-07 | Registrar docente | pendiente |
