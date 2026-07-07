@@ -182,7 +182,7 @@ class SistemaNivelacion:
         return [usuario for usuario in self.usuarios.values() if isinstance(usuario, Docente)]
 
     def listar_estudiantes(self):
-        return [usuario for usuario in self.usuarios if isinstance(usuario, Estudiante)]
+        return [usuario for usuario in self.usuarios.values() if isinstance(usuario, Estudiante)]
 
     def resumen(self):
         return {
