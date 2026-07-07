@@ -13,7 +13,7 @@ Comando: `streamlit run interfaz/app.py`
 | T0 | Subir tareas.md | hecho |
 | HU-01 | Estructura base del frontend | hecho |
 | HU-02 | Estado global (state.py) | hecho |
-| HU-03 | Dashboard principal | pendiente |
+| HU-03 | Dashboard principal | hecho |
 | HU-04 | Menu lateral | pendiente |
 | HU-05 | Listar usuarios | pendiente |
 | HU-06 | Registrar estudiante | pendiente |
