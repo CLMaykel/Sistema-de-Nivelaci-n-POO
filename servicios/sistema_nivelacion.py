@@ -179,7 +179,7 @@ class SistemaNivelacion:
         return reporte
 
     def listar_docentes(self):
-        return [usuario for usuario in self.usuarios if isinstance(usuario, Docente)]
+        return [usuario for usuario in self.usuarios.values() if isinstance(usuario, Docente)]
 
     def listar_estudiantes(self):
         return [usuario for usuario in self.usuarios if isinstance(usuario, Estudiante)]
