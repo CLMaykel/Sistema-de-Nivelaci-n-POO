@@ -12,17 +12,20 @@ from modelos.estudiante import Estudiante
 from servicios.fabrica import FabricaUsuario
 from datetime import date
 from servicios.BaseD import ConexionDB  # <--- Aquí importamos tu clase de base de datos
-
+# Clase principal del Sistema de Nivelación
 class SistemaNivelacion:
-
+    # Constante que representa los créditos asignados a cada curso.
     CREDITOS_POR_CURSO = 4
 
     def __init__(self):
+        # Crea la fábrica de usuarios.
         self.fabrica = FabricaUsuario()
+        # Define el período académico actual.
         self.periodo_actual = "2026-1"
+        # Lista de períodos disponibles.
         self.periodos_disponibles = [self.periodo_actual] 
         
-        # Instanciamos la conexión a la base de datos
+        # Crea el objeto de conexión con la base de datos.
         self.db = ConexionDB()
         
         self.usuarios = {}
