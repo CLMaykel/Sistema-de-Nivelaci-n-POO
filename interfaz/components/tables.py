@@ -71,3 +71,26 @@ def curso_to_dict(curso):
         "Estado": "Abierto" if curso.estado else "Cerrado",
     }
 
+
+def carga_to_dict(carga):
+    estudiante = carga.estudiante
+    return {
+        "ID": carga.id_carga,
+        "Estudiante": f"{estudiante.nombres} {estudiante.apellidos}",
+        "Periodo": carga.periodo,
+        "Total asignaturas": carga.total_asignaturas,
+        "Total creditos": carga.total_creditos,
+        "Estado": "Activa" if carga.estado else "Inactiva",
+    }
+
+
+def reporte_to_dict(reporte):
+    return {
+        "ID": reporte.id_reporte,
+        "Tipo": reporte.tipo_reporte,
+        "Fecha": reporte.fecha_generacion,
+        "Periodo": reporte.periodo,
+        "Descripcion": reporte.descripcion,
+        "Formato": reporte.formato,
+    }
+
