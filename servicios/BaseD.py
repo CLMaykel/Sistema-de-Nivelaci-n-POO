@@ -16,15 +16,15 @@ class ConexionDB:
      # Método que establece la conexión con la base de datos.
     def conectar(self):
         try:
-
+            # Cadena de conexión con los datos necesarios.
             conexion_str = (
-                f"DRIVER={self.driver};"
-                f"SERVER={self.server};"
-                f"DATABASE={self.database};"
+                f"DRIVER={self.driver};"  # Driver ODBC
+                f"SERVER={self.server};"  # Servidor SQL
+                f"DATABASE={self.database};" # Base de datos
                 "Trusted_Connection=yes;"
                 "Encrypt=no;"
             )
-            
+            # Crea la conexión utilizando la cadena anterior.
             self.conn = pyodbc.connect(conexion_str)
             self.cursor = self.conn.cursor()
             
