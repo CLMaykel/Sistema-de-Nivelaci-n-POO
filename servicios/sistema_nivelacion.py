@@ -103,8 +103,9 @@ class SistemaNivelacion:
         return usuario
 
     def registrar_aula(self, codigo, nombre, capacidad, piso, edificio):
-        aula = Aula(len(self.aulas) + 1, codigo, nombre, int(capacidad), int(piso), edificio)
-        self.aulas.append(aula)
+        id_aula = len(self.aulas) + 1
+        aula = Aula(id_aula, codigo, nombre, int(capacidad), int(piso), edificio)
+        self.aulas[id_aula] = aula
         return aula
 
     def registrar_horario(self, dia, hora_inicio, hora_fin, modalidad, grupo, aula):
