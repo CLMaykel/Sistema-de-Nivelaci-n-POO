@@ -196,7 +196,6 @@ class SistemaNivelacion:
         }
 
     def cargar_datos_demo(self):
-        # Los diccionarios también evalúan a False si están vacíos, por lo que esta lógica se mantiene
         if self.usuarios or self.aulas or self.cursos:
             return
 
@@ -247,6 +246,7 @@ class SistemaNivelacion:
         aula = self.registrar_aula("A101", "Aula 101", 35, 1, "Bloque A")
         horario = self.registrar_horario("Lunes", "08:00", "10:00", "Presencial", "A", aula)
         curso = self.registrar_curso("POO-001", "Programacion Orientada a Objetos", "Nivelacion", "A", 30, docente, horario, aula)
+        
         self.inscribir_estudiante(curso, estudiante1)
         self.inscribir_estudiante(curso, estudiante2)
         self.registrar_carga_academica(estudiante1)
