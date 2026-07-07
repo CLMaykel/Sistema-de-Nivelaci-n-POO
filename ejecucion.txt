@@ -1,1 +1,3 @@
+abrir terminal en python:
+Crtl + shift + Ñ
 
