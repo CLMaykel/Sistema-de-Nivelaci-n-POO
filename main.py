@@ -1,5 +1,8 @@
-from interfaz.ventana_principal import iniciar_interfaz
+"""Punto de entrada del proyecto.
 
+Para la interfaz web ejecutar:
+    streamlit run interfaz/app.py
+"""
 
 if __name__ == "__main__":
-    iniciar_interfaz()
+    print("Ejecute: streamlit run interfaz/app.py")
