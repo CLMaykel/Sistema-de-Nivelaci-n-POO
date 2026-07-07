@@ -1,5 +1,13 @@
+import sys
+from pathlib import Path
+
+RAIZ = Path(__file__).resolve().parents[1]
+if str(RAIZ) not in sys.path:
+    sys.path.insert(0, str(RAIZ))
+
 import streamlit as st
 
+from interfaz.branding import TITULO_APP, encabezado_sidebar
 from interfaz.pages.acerca import mostrar_acerca
 from interfaz.pages.aulas import mostrar_aulas
 from interfaz.pages.cargas import mostrar_cargas
@@ -36,19 +44,25 @@ RUTAS = {
 
 
 def main():
-    st.set_page_config(page_title="Sistema de Nivelacion POO", layout="wide")
+    st.set_page_config(
+        page_title=TITULO_APP,
+        page_icon="🎓",
+        layout="wide",
+    )
 
     from interfaz.state import get_sistema
-    from interfaz.styles import aplicar_estilos
+    from interfaz.styles import aplicar_estilos, pie_pagina
 
     aplicar_estilos()
     sistema = get_sistema()
 
-    st.sidebar.title("Menu")
-    st.sidebar.caption("Sistema de Nivelacion POO")
-    opcion = st.sidebar.radio("Navegacion", OPCIONES)
+    st.sidebar.markdown(encabezado_sidebar(), unsafe_allow_html=True)
+    st.sidebar.markdown("---")
+    st.sidebar.caption("Menu de navegacion")
+    opcion = st.sidebar.radio("Navegacion", OPCIONES, label_visibility="collapsed")
 
     RUTAS[opcion](sistema)
+    pie_pagina()
 
 
 main()
