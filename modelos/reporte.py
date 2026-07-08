@@ -9,7 +9,7 @@ from modelos.iexportable import IExportable
 #   - Cliente .............................. SistemaNivelacion.generar_reporte
 
 class Reporte:
-
+                                                                                        #inyección de dependencia exportador:IExportable
     def __init__(self, id_reporte, tipo_reporte, fecha_generacion, periodo, descripcion, exportador: IExportable):
         self.__id_reporte = id_reporte
         self.__tipo_reporte = tipo_reporte
@@ -19,6 +19,7 @@ class Reporte:
         self.__exportador = exportador
         self.__formato = exportador.__class__.__name__.replace("Exportar", "")
 #uso de propiedades para acceder a los atributos privados
+    # Métodos Getter (lectura)
     @property
     def id_reporte(self):
         return self.__id_reporte
