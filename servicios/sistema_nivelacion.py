@@ -209,6 +209,18 @@ class SistemaNivelacion:
     # Devuelve todos los estudiantes.
     def listar_estudiantes(self):
         return [usuario for usuario in self.usuarios.values() if isinstance(usuario, Estudiante)]
+
+    def listar_administradores(self):
+        return [usuario for usuario in self.usuarios.values() if isinstance(usuario, Administrador)]
+
+    def total_inscripciones(self):
+        return sum(len(curso.lista_estudiantes) for curso in self.cursos.values())
+
+    def resumen_horarios_por_dia(self):
+        resumen = {}
+        for horario in self.horarios.values():
+            resumen[horario.dia] = resumen.get(horario.dia, 0) + 1
+        return resumen
     # Devuelve un resumen del sistema.
     def resumen(self):
         return {

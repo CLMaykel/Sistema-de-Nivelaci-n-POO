@@ -1,9 +1,6 @@
 from modelos.admin import Administrador
 from modelos.docente import Docente
 from modelos.estudiante import Estudiante
-
-
-def usuario_to_dict(usuario):
     if isinstance(usuario, Estudiante):
         tipo = "Estudiante"
     elif isinstance(usuario, Docente):
@@ -93,4 +90,55 @@ def reporte_to_dict(reporte):
         "Descripcion": reporte.descripcion,
         "Formato": reporte.formato,
     }
+
+
+def usuario_detalle_campos(usuario):
+    campos = [
+        ("ID", usuario.id_usuario),
+        ("Cedula", usuario.cedula),
+        ("Nombres", usuario.nombres),
+        ("Apellidos", usuario.apellidos),
+        ("Correo", usuario.correo),
+        ("Telefono", usuario.telefono),
+        ("Estado", "Activo" if usuario.estado else "Inactivo"),
+    ]
+
+    if isinstance(usuario, Estudiante):
+        campos.extend(
+            [
+                ("Tipo documento", usuario.tipo_documento),
+                ("Fecha nacimiento", usuario.fecha_nacimiento),
+                ("Discapacidad", "Si" if usuario.discapacidad else "No"),
+                ("Estado nivelacion", usuario.estado_nivelacion),
+            ]
+        )
+    elif isinstance(usuario, Docente):
+        campos.extend(
+            [
+                ("Titulo profesional", usuario.titulo_profesional),
+                ("Especialidad", usuario.especialidad),
+            ]
+        )
+    elif isinstance(usuario, Administrador):
+        campos.extend(
+            [
+                ("ID administrador", usuario.id_administrador),
+                ("Cargo", usuario.cargo),
+            ]
+        )
+
+    return campos
+
+
+def aula_con_uso_dict(aula, cursos_asignados):
+    datos = aula_to_dict(aula)
+    datos["Cursos asignados"] = cursos_asignados
+    return datos
+
+
+def curso_detalle_dict(curso):
+    datos = curso_to_dict(curso)
+    datos["Inscritos"] = len(curso.lista_estudiantes)
+    datos["Cupo disponible"] = curso.cupo_maximo - curso.cupo_actual
+    return datos
 
