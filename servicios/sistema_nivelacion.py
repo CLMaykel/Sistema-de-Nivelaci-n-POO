@@ -132,11 +132,12 @@ class SistemaNivelacion:
 
     def probar_conexion_db(self):
         try:
-            conexion = self.db.conectar()
+            conexion = self.db.conectar(silencioso=True)
             if conexion:
                 self.db.cerrar()
                 return True, "Conexion a SQL Server establecida correctamente."
-            return False, "No se pudo establecer la conexion. Configure .streamlit/secrets.toml o SQL Server."
+            detalle = self.db.ultimo_error or "Revise secrets.toml y que el servidor sea accesible."
+            return False, f"No se pudo establecer la conexion. {detalle}"
         except Exception as error:
             return False, f"Error de conexion: {error}"
 
@@ -144,6 +145,21 @@ class SistemaNivelacion:
         ok, mensaje = self._persistencia.cargar(self)
         self._db_activa = ok
         return ok, mensaje
+
+    def inicializar_datos(self):
+        ok, mensaje = self.cargar_desde_db()
+        if ok:
+            return True, mensaje, "sql"
+
+        self._inicializar_periodos()
+        self.cargar_datos_demo()
+        aviso = (
+            "SQL Server no disponible. La aplicacion inicio en modo demostracion en memoria. "
+            "Los cambios no se guardaran en BD hasta configurar una conexion valida."
+        )
+        if mensaje:
+            aviso = f"{aviso} Detalle: {mensaje}"
+        return False, aviso, "demo"
 
     def buscar_usuario_por_identificador(self, identificador):
         identificador = identificador.strip()
@@ -478,7 +494,7 @@ class SistemaNivelacion:
         }
     # Carga datos de prueba para demostrar el funcionamiento.
     def cargar_datos_demo(self):
-        
+        self._inicializar_periodos()
         if self.usuarios or self.aulas or self.cursos:
             return
         # Registra un docente.

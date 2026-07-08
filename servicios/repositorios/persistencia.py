@@ -40,8 +40,9 @@ class PersistenciaSQL:
         self.db = db
 
     def cargar(self, sistema):
-        if not self.db.conectar():
-            return False, "No se pudo conectar a SQL Server."
+        if not self.db.conectar(silencioso=True):
+            detalle = self.db.ultimo_error or "Servidor no alcanzable."
+            return False, f"No se pudo conectar a SQL Server: {detalle}"
 
         try:
             self._limpiar_memoria(sistema)

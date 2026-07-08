@@ -18,6 +18,7 @@ class ConexionDB:
         self.use_trusted_connection = True
         self.conn = None
         self.cursor = None
+        self.ultimo_error = None
         self._cargar_configuracion()
 
     def _cargar_configuracion(self):
@@ -35,7 +36,8 @@ class ConexionDB:
         except (KeyError, FileNotFoundError, AttributeError):
             pass
 
-    def conectar(self):
+    def conectar(self, silencioso=True):
+        self.ultimo_error = None
         try:
             if self.use_trusted_connection:
                 conexion_str = (
@@ -44,6 +46,7 @@ class ConexionDB:
                     f"DATABASE={self.database};"
                     "Trusted_Connection=yes;"
                     "TrustServerCertificate=yes;"
+                    "Connection Timeout=8;"
                 )
             else:
                 conexion_str = (
@@ -53,6 +56,7 @@ class ConexionDB:
                     f"UID={self.username};"
                     f"PWD={self.password};"
                     "TrustServerCertificate=yes;"
+                    "Connection Timeout=8;"
                 )
 
             self.conn = pyodbc.connect(conexion_str)
@@ -60,12 +64,11 @@ class ConexionDB:
             return self.conn
 
         except Exception as e:
-            mensaje = "No se pudo conectar a la base de datos."
-            if _HAS_STREAMLIT:
-                st.error(mensaje)
-                st.exception(e)
-            else:
-                print(f"{mensaje} {e}")
+            self.ultimo_error = str(e)
+            if not silencioso and _HAS_STREAMLIT:
+                st.error("No se pudo conectar a la base de datos.")
+            elif not silencioso:
+                print(f"No se pudo conectar a la base de datos. {e}")
             return None
 
     def ejecutar(self, query, params=None):

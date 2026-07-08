@@ -71,17 +71,17 @@ def main():
     inicializar_sesion()
 
     sistema = get_sistema()
-    if sistema is None:
-        st.error("No se pudo conectar a la base de datos SQL Server.")
-        st.warning(st.session_state.get("db_mensaje", "Configure .streamlit/secrets.toml y ejecute POOPROYECTO.sql."))
-        pie_pagina()
-        return
+
+    if not st.session_state.get("db_cargada"):
+        st.sidebar.warning("Modo demo en memoria (sin SQL Server).")
 
     rol = obtener_rol_actual()
 
     if not rol:
         mostrar_logo_sidebar()
         st.sidebar.markdown(encabezado_sidebar(), unsafe_allow_html=True)
+        if not st.session_state.get("db_cargada"):
+            st.info(st.session_state.get("db_mensaje", "Configure SQL Server para persistencia real."))
         pantalla_login(sistema)
         pie_pagina()
         return

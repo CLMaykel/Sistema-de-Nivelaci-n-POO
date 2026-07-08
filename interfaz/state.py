@@ -12,10 +12,10 @@ from servicios.sistema_nivelacion import SistemaNivelacion
 
 def get_sistema():
     if "sistema" not in st.session_state:
-        st.session_state.sistema = SistemaNivelacion()
-        ok, mensaje = st.session_state.sistema.cargar_desde_db()
+        sistema = SistemaNivelacion()
+        ok, mensaje, modo = sistema.inicializar_datos()
+        st.session_state.sistema = sistema
         st.session_state.db_cargada = ok
+        st.session_state.modo_datos = modo
         st.session_state.db_mensaje = mensaje
-        if not ok:
-            st.session_state.sistema = None
     return st.session_state.sistema
