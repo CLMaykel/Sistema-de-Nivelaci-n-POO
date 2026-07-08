@@ -85,8 +85,8 @@ def pantalla_seleccion_rol(sistema):
             st.markdown(
                 f"""
                 <div class="role-card" style="min-height:190px;">
-                    <h2 style="margin-bottom:4px;">{info["icono"]} {rol}</h2>
-                    <p style="color:#555;font-size:0.95rem;">{info["descripcion"]}</p>
+                    <h2>{info["icono"]} {rol}</h2>
+                    <p>{info["descripcion"]}</p>
                 </div>
                 """,
                 unsafe_allow_html=True,

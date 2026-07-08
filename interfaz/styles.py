@@ -20,6 +20,16 @@ def aplicar_estilos():
             .main {{
                 background-color: #f8f8f8;
             }}
+            .main .block-container {{
+                color: {COLOR_NEGRO};
+            }}
+            .main h1, .main h2, .main h3, .main h4 {{
+                color: {COLOR_NEGRO} !important;
+            }}
+            [data-testid="stCaptionContainer"] p,
+            [data-testid="stCaptionContainer"] {{
+                color: {COLOR_GRIS_OSCURO} !important;
+            }}
             [data-testid="stSidebar"] {{
                 background: linear-gradient(180deg, {COLOR_NEGRO} 0%, {COLOR_NEGRO_SUAVE} 100%);
                 border-right: 3px solid {COLOR_ROJO};
@@ -83,7 +93,7 @@ def aplicar_estilos():
                 margin-bottom:8px;
             }}
             .role-card {{
-                background:{COLOR_BLANCO};
+                background:{COLOR_BLANCO} !important;
                 border:1px solid #dddddd;
                 border-top:4px solid {COLOR_ROJO};
                 border-radius:12px;
@@ -91,12 +101,21 @@ def aplicar_estilos():
                 box-shadow:0 2px 8px rgba(26,26,26,0.08);
                 margin-bottom:14px;
             }}
+            .role-card h2 {{
+                color:{COLOR_NEGRO} !important;
+                margin-bottom:4px;
+            }}
+            .role-card p {{
+                color:{COLOR_GRIS_OSCURO} !important;
+                font-size:0.95rem;
+            }}
             .readonly-box {{
-                background:#f7f7f7;
+                background:#f7f7f7 !important;
                 border-left:4px solid {COLOR_VERDE};
                 padding:12px 14px;
                 border-radius:8px;
                 margin-bottom:12px;
+                color:{COLOR_NEGRO_SUAVE} !important;
             }}
         </style>
         """,
