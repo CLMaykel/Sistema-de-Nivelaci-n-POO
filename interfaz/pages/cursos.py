@@ -13,9 +13,10 @@ def _formulario_curso(sistema):
         return
 
     opciones_docentes = {f"{d.cedula} - {d.nombres} {d.apellidos}": d for d in docentes}
-    opciones_aulas = {f"{a.codigo} - {a.nombre}": a for a in sistema.aulas}
+    opciones_aulas = {f"{a.codigo} - {a.nombre}": a for a in sistema.aulas.values()}
     opciones_horarios = {
-        f"{h.dia} {h.hora_inicio}-{h.hora_fin} ({h.aula.codigo})": h for h in sistema.horarios
+        f"{h.dia} {h.hora_inicio}-{h.hora_fin} ({h.aula.codigo})": h
+        for h in sistema.horarios.values()
     }
 
     with st.form("form_curso"):
@@ -62,5 +63,5 @@ def mostrar_cursos(sistema):
         st.warning("No hay cursos registrados.")
         return
 
-    filas = [curso_to_dict(curso) for curso in sistema.cursos]
+    filas = [curso_to_dict(curso) for curso in sistema.cursos.values()]
     st.dataframe(filas, use_container_width=True, hide_index=True)

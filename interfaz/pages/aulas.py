@@ -45,5 +45,5 @@ def mostrar_aulas(sistema):
         st.warning("No hay aulas registradas.")
         return
 
-    filas = [aula_to_dict(aula) for aula in sistema.aulas]
+    filas = [aula_to_dict(aula) for aula in sistema.aulas.values()]
     st.dataframe(filas, use_container_width=True, hide_index=True)

@@ -47,5 +47,5 @@ def mostrar_reportes(sistema):
         st.warning("No hay reportes generados.")
         return
 
-    filas = [reporte_to_dict(reporte) for reporte in sistema.reportes]
+    filas = [reporte_to_dict(reporte) for reporte in sistema.reportes.values()]
     st.dataframe(filas, use_container_width=True, hide_index=True)

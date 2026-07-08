@@ -145,5 +145,5 @@ def mostrar_usuarios(sistema):
         st.warning("No hay usuarios registrados.")
         return
 
-    filas = [usuario_to_dict(usuario) for usuario in sistema.usuarios]
+    filas = [usuario_to_dict(usuario) for usuario in sistema.usuarios.values()]
     st.dataframe(filas, use_container_width=True, hide_index=True)

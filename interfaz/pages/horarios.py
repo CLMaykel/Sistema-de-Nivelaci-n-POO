@@ -11,7 +11,7 @@ def _formulario_horario(sistema):
         st.warning("Debe registrar al menos un aula antes de crear un horario.")
         return
 
-    opciones_aulas = {f"{aula.codigo} - {aula.nombre}": aula for aula in sistema.aulas}
+    opciones_aulas = {f"{aula.codigo} - {aula.nombre}": aula for aula in sistema.aulas.values()}
 
     with st.form("form_horario"):
         dia = st.selectbox("Dia", ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"])
@@ -54,5 +54,5 @@ def mostrar_horarios(sistema):
         st.warning("No hay horarios registrados.")
         return
 
-    filas = [horario_to_dict(horario) for horario in sistema.horarios]
+    filas = [horario_to_dict(horario) for horario in sistema.horarios.values()]
     st.dataframe(filas, use_container_width=True, hide_index=True)

@@ -44,5 +44,5 @@ def mostrar_cargas(sistema):
         st.warning("No hay cargas academicas registradas.")
         return
 
-    filas = [carga_to_dict(carga) for carga in sistema.cargas_academicas]
+    filas = [carga_to_dict(carga) for carga in sistema.cargas_academicas.values()]
     st.dataframe(filas, use_container_width=True, hide_index=True)

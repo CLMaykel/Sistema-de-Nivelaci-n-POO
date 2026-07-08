@@ -16,7 +16,7 @@ def _formulario_inscripcion(sistema):
         return
 
     opciones_estudiantes = {f"{e.cedula} - {e.nombres} {e.apellidos}": e for e in estudiantes}
-    opciones_cursos = {f"{c.codigo} - {c.nombre}": c for c in sistema.cursos}
+    opciones_cursos = {f"{c.codigo} - {c.nombre}": c for c in sistema.cursos.values()}
 
     with st.form("form_inscripcion"):
         estudiante_etiqueta = st.selectbox("Estudiante", list(opciones_estudiantes.keys()))
@@ -44,7 +44,7 @@ def _tabla_inscritos_por_curso(sistema):
         st.warning("No hay cursos registrados.")
         return
 
-    opciones_cursos = {f"{c.codigo} - {c.nombre}": c for c in sistema.cursos}
+    opciones_cursos = {f"{c.codigo} - {c.nombre}": c for c in sistema.cursos.values()}
     curso_etiqueta = st.selectbox("Seleccione un curso", list(opciones_cursos.keys()), key="curso_inscritos")
     curso = opciones_cursos[curso_etiqueta]
 
