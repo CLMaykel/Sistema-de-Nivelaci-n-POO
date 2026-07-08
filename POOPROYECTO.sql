@@ -12,3 +12,14 @@ CREATE TABLE PeriodoAcademico(
     fecha_fin DATE NOT NULL,
     estado VARCHAR(20) NOT NULL
 );
+
+CREATE TABLE Usuario(
+    id_usuario INT PRIMARY KEY,
+    cedula VARCHAR(20) UNIQUE NOT NULL,
+    nombres VARCHAR(100) NOT NULL,
+    apellidos VARCHAR(100) NOT NULL,
+    correo VARCHAR(120) UNIQUE NOT NULL,
+    contrasena VARCHAR(255) NOT NULL,
+    telefono VARCHAR(20),
+    estado BIT NOT NULL
+);
