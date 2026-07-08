@@ -85,3 +85,27 @@ CREATE TABLE Horario(
     FOREIGN KEY(id_aula)
         REFERENCES Aula(id_aula)
 );
+
+CREATE TABLE CursoNivelacion(
+    id_curso INT PRIMARY KEY,
+    codigo VARCHAR(20),
+    nombre VARCHAR(120),
+    nivel VARCHAR(30),
+    paralelo VARCHAR(10),
+    cupo_maximo INT,
+    cupo_actual INT DEFAULT 0,
+    estado BIT,
+
+    id_docente INT NOT NULL,
+    id_horario INT NOT NULL,
+    id_aula INT NOT NULL,
+
+    FOREIGN KEY(id_docente)
+        REFERENCES Docente(id_usuario),
+
+    FOREIGN KEY(id_horario)
+        REFERENCES Horario(id_horario),
+
+    FOREIGN KEY(id_aula)
+        REFERENCES Aula(id_aula)
+);
