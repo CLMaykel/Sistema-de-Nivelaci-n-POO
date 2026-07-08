@@ -47,10 +47,7 @@ class CargaAcademica:
         self.__estado = valor
 
     def generar_carga(self):
-         """
-        Muestra un resumen de la carga académica del estudiante,
-        indicando el período, número de asignaturas y créditos.
-        """
+        """Muestra un resumen de la carga academica del estudiante."""
         print("Carga academica de " + self.__estudiante.nombres + " " + self.__estudiante.apellidos)
         print("Periodo: " + self.__periodo)
         print(str(self.__total_asignaturas) + " asignaturas " + str(self.__total_creditos) + " creditos")

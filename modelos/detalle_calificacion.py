@@ -37,18 +37,23 @@ class DetalleCalificacion:
         print("Detalle registrado: " + self.__tipo_evaluacion + " puntaje: " + str(self.__puntaje_obtenido) + "/" + str(self.__puntaje_total))
 #editamos el puntaje obtenido en la evaluacion
     def editar_detalle(self, nuevo_puntaje):
-                """
-        Actualiza el puntaje obtenido en la evaluación.
-        """
+        """Actualiza el puntaje obtenido en la evaluacion."""
         self.__puntaje_obtenido = nuevo_puntaje
         print("Puntaje actualizado a " + str(nuevo_puntaje))
 
     def eliminar_detalle(self):
         print("Detalle eliminado")
-#se muetra un resumen del detalle de calificacion 
+
     def mostrar_info(self):
-                """
-        Muestra un resumen de la evaluación,
-        incluyendo el puntaje obtenido y el porcentaje.
-        """
-        print("Evaluacion: " + self.__tipo_evaluacion + " " + str(self.__puntaje_obtenido) + "/" + str(self.__puntaje_total) + " porcentaje: " + str(self.porcentaje) + "%")
+        """Muestra un resumen de la evaluacion con puntaje y porcentaje."""
+        print(
+            "Evaluacion: "
+            + self.__tipo_evaluacion
+            + " "
+            + str(self.__puntaje_obtenido)
+            + "/"
+            + str(self.__puntaje_total)
+            + " porcentaje: "
+            + str(self.porcentaje)
+            + "%"
+        )

@@ -33,11 +33,7 @@ class Carrera:
     def nombre(self, valor):
         self.__nombre = valor
 
-#se muestra la informacion de la carrera
-            """
-        Muestra  la información principal de la carrera,
-        incluyendo su nombre, código y la facultad a la que pertenece.
-        """
     def mostrar_info(self):
+        """Muestra la informacion principal de la carrera y su facultad."""
         print("Carrera: " + self.__nombre + " codigo: " + self.__codigo)
         print("Facultad: " + self.__facultad.nombre)
