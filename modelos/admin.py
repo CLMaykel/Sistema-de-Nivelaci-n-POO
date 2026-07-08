@@ -56,6 +56,34 @@ class Administrador(Usuario):
         print(mensaje)
         return mensaje
     
+    def registrar_usuario(self, tipo_usuario, id_usuario, cedula, nombres, apellidos, correo, contraseña, telefono, *args, **kwargs):
+        from servicios.fabrica import FabricaUsuario
+
+        if not tipo_usuario:
+            raise ValueError("Debe indicar el tipo de usuario")
+
+        fabrica = FabricaUsuario()
+        usuario = fabrica.crear_usuario(
+            tipo_usuario,
+            id_usuario,
+            cedula,
+            nombres,
+            apellidos,
+            correo,
+            contraseña,
+            telefono,
+            *args,
+            **kwargs
+        )
+
+        usuario.estado = True
+        mensaje = (
+            f"Usuario registrado por {self.nombres} {self.apellidos}: "
+            f"{usuario.nombres} {usuario.apellidos} ({tipo_usuario})"
+        )
+        print(mensaje)
+        return usuario
+        
     #genera reportes
     def gestionar_reportes(self):
         mensaje = "Reporte generado por: " + self.nombres + " " + self.apellidos + " cargo: " + self.__cargo
