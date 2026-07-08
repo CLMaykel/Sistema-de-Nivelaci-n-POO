@@ -23,3 +23,12 @@ CREATE TABLE Usuario(
     telefono VARCHAR(20),
     estado BIT NOT NULL
 );
+
+CREATE TABLE Administrador(
+    id_usuario INT PRIMARY KEY,
+    id_administrador INT UNIQUE NOT NULL,
+    cargo VARCHAR(100) NOT NULL,
+
+    FOREIGN KEY(id_usuario)
+        REFERENCES Usuario(id_usuario)
+);
