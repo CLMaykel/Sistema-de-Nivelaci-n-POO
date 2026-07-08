@@ -32,3 +32,12 @@ CREATE TABLE Administrador(
     FOREIGN KEY(id_usuario)
         REFERENCES Usuario(id_usuario)
 );
+
+CREATE TABLE Docente(
+    id_usuario INT PRIMARY KEY,
+    titulo_profesional VARCHAR(120),
+    especialidad VARCHAR(120),
+
+    FOREIGN KEY(id_usuario)
+        REFERENCES Usuario(id_usuario)
+);
