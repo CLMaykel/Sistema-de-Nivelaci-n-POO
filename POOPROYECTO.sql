@@ -176,3 +176,17 @@ CREATE TABLE DetalleCalificacion(
     FOREIGN KEY(id_calificacion)
         REFERENCES Calificacion(id_calificacion)
 );
+
+CREATE TABLE Reporte(
+    id_reporte INT PRIMARY KEY,
+    tipo_reporte VARCHAR(50),
+    fecha_generacion DATE,
+    id_periodo INT NOT NULL,
+    descripcion VARCHAR(255),
+    formato VARCHAR(20),
+
+    FOREIGN KEY(id_periodo)
+        REFERENCES PeriodoAcademico(id_periodo)
+);
+INSERT INTO Facultad
+VALUES (1, 'Facultad de Ingeniería');
