@@ -35,6 +35,13 @@ def mostrar_acerca(sistema):
         ### Patrones POO aplicados
 
         Herencia, polimorfismo, Factory Method y Strategy.
+
+        ### Acceso por roles
+
+        El sistema utiliza una interfaz diferenciada por roles, permitiendo que
+        administradores, docentes y estudiantes accedan unicamente a las funciones
+        correspondientes a su perfil. Esta separacion mejora la organizacion, la
+        seguridad visual y la experiencia de usuario dentro del sistema academico.
         """
     )
 
