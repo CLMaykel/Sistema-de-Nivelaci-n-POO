@@ -56,27 +56,18 @@ class Administrador(Usuario):
         print(mensaje)
         return mensaje
     
+    #metodo para registrar un nuevo usuario en el sistema como administrador
     def registrar_usuario(self, tipo_usuario, id_usuario, cedula, nombres, apellidos, correo, contraseña, telefono, *args, **kwargs):
-        from servicios.fabrica import FabricaUsuario
-
+        from servicios.fabrica import FabricaUsuario  #importamos la fabrica de usuarios para crear un nuevo usuario
+        #si no se indica el tipo de usuario se lanza una excepcion
         if not tipo_usuario:
             raise ValueError("Debe indicar el tipo de usuario")
-
+        #utilizamos la fabrica de usuarios para crear uno nuevo
         fabrica = FabricaUsuario()
-        usuario = fabrica.crear_usuario(
-            tipo_usuario,
-            id_usuario,
-            cedula,
-            nombres,
-            apellidos,
-            correo,
-            contraseña,
-            telefono,
-            *args,
-            **kwargs
-        )
-
-        usuario.estado = True
+        #se crea el usuario con los parametros proporcionados
+        usuario = fabrica.crear_usuario(tipo_usuario, id_usuario, cedula, nombres, apellidos, correo, contraseña, telefono, *args, **kwargs)
+    
+        usuario.estado = True  #se establece el estado del usuario como activo
         mensaje = (
             f"Usuario registrado por {self.nombres} {self.apellidos}: "
             f"{usuario.nombres} {usuario.apellidos} ({tipo_usuario})"
