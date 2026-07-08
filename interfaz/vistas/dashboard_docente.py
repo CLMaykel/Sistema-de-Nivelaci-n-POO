@@ -3,8 +3,9 @@ import streamlit as st
 from interfaz.auth import obtener_usuario_actual
 from interfaz.branding import encabezado_pagina
 from interfaz.components.cards import metric_card
-from interfaz.components.layout import fila_metricas, intro_modulo, tabla_o_vacio
+from interfaz.components.layout import fila_metricas, intro_modulo, tabla_o_vacio, tarjetas_navegacion
 from interfaz.components.tables import calificacion_registro_to_dict, curso_to_dict
+from interfaz.navigation import MODULOS_DOCENTE
 
 
 def _cursos_docente(sistema, docente):
@@ -84,6 +85,10 @@ def mostrar_dashboard_docente(sistema):
             metric_card("Estudiantes", sum(len(c.lista_estudiantes) for c in cursos))
         with col3:
             metric_card("Periodo", sistema.periodo_actual)
+
+        st.divider()
+        st.subheader("Accesos rapidos")
+        tarjetas_navegacion(MODULOS_DOCENTE, prefijo_clave="docente")
 
     with tab_consulta:
         _consulta_docente(sistema, docente)

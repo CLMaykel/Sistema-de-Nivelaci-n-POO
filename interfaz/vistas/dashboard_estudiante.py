@@ -3,13 +3,14 @@ import streamlit as st
 from interfaz.auth import obtener_usuario_actual
 from interfaz.branding import encabezado_pagina
 from interfaz.components.cards import metric_card
-from interfaz.components.layout import fila_metricas, intro_modulo, tabla_o_vacio
+from interfaz.components.layout import fila_metricas, intro_modulo, tabla_o_vacio, tarjetas_navegacion
 from interfaz.components.tables import (
     asistencia_registro_to_dict,
     calificacion_registro_to_dict,
     carga_to_dict,
     curso_to_dict,
 )
+from interfaz.navigation import MODULOS_ESTUDIANTE
 
 
 def _cursos_estudiante(sistema, estudiante):
@@ -58,6 +59,10 @@ def _resumen_estudiante(sistema, estudiante):
         metric_card("Estado", estudiante.estado_nivelacion)
     with col3:
         metric_card("Periodo", sistema.periodo_actual)
+
+    st.divider()
+    st.subheader("Accesos rapidos")
+    tarjetas_navegacion(MODULOS_ESTUDIANTE, prefijo_clave="estudiante")
 
 
 def _consulta_estudiante(sistema, estudiante):

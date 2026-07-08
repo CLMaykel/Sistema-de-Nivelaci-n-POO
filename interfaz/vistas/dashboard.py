@@ -2,18 +2,9 @@ import streamlit as st
 
 from interfaz.auth import obtener_rol_actual, obtener_usuario_actual
 from interfaz.branding import NOMBRE_SISTEMA, encabezado_pagina
-from interfaz.components.layout import fila_metricas, intro_modulo, tabla_o_vacio
+from interfaz.components.layout import fila_metricas, intro_modulo, tabla_o_vacio, tarjetas_navegacion
 from interfaz.components.tables import curso_to_dict
-
-MODULOS_ADMIN = [
-    ("Usuarios", "Gestion de estudiantes, docentes y administradores"),
-    ("Aulas", "Registro y consulta de espacios fisicos"),
-    ("Horarios", "Planificacion de dias, horas y modalidad"),
-    ("Cursos", "Creacion de cursos de nivelacion"),
-    ("Inscripciones", "Matricula de estudiantes en cursos"),
-    ("Cargas Academicas", "Generacion de carga por periodo"),
-    ("Reportes", "Exportacion PDF y Excel"),
-]
+from interfaz.navigation import MODULOS_ADMIN
 
 
 def mostrar_dashboard(sistema):
@@ -72,16 +63,7 @@ def mostrar_dashboard(sistema):
 
     st.divider()
     st.subheader("Modulos del sistema")
-
-    columnas = st.columns(2)
-    for indice, (nombre, descripcion) in enumerate(MODULOS_ADMIN):
-        with columnas[indice % 2]:
-            with st.container(border=True):
-                st.markdown(f"**{nombre}**")
-                st.caption(descripcion)
-                if st.button(f"Ir a {nombre}", key=f"modulo_{nombre}", use_container_width=True):
-                    st.session_state.nav_seleccion = nombre
-                    st.rerun()
+    tarjetas_navegacion(MODULOS_ADMIN, prefijo_clave="admin")
 
     st.divider()
     st.subheader("Cursos activos del periodo")
