@@ -7,14 +7,15 @@ class CursoNivelacion:
         self.__nivel = nivel
         self.__paralelo = paralelo
         self.__cupo_maximo = cupo_maximo
-        self.__cupo_actual = 0
+        self.__cupo_actual = 0 # Inicia sin estudiantes inscritos
         self.__estado = estado
         self.__docente = docente
         self.__horario = horario
         self.__aula = aula
         self.__lista_estudiantes = [] #lista para almacenar los estudiantes inscritos en el curso
     
-    #uso de propiedades para acceder a los atributos privados
+        # ============== PROPIEDADES (GETTERS) ==============
+    # Las propiedades permiten acceder a los atributos privados de manera controlada
     @property
     def id_curso(self):
         return self.__id_curso
@@ -63,7 +64,9 @@ class CursoNivelacion:
     def lista_estudiantes(self):
         return self.__lista_estudiantes
     
-    #setter para actualizar el cupo actual del curso, se valida que no se supere el cupo maximo ni que sea negativo
+        # ============== SETTERS ==============
+    # Setters para modificar atributos con validaciones
+    #se valida que no se supere el cupo maximo ni que sea negativo
     @cupo_actual.setter
     def cupo_actual(self, valor):
         if valor > self.__cupo_maximo:
@@ -93,7 +96,11 @@ class CursoNivelacion:
         else:
             print("No hay cupos disponibles en " + self.__nombre)
     
-    #metodo para generar el horario del curso, se valida que el curso tenga un horario asignado antes de mostrarlo
+            
+        #Genera y muestra el horario del curso.
+        
+        #Verifica que el curso tenga un horario asignado antes de mostrarlo.
+        
     def generar_horario(self):
         if self.__horario is not None:
             self.__horario.mostrar_info()
