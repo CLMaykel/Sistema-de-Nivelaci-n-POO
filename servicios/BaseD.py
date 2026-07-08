@@ -1,43 +1,75 @@
 import pyodbc
-# Clase encargada de administrar la conexión con la base de datos.
+
+try:
+    import streamlit as st
+
+    _HAS_STREAMLIT = True
+except ImportError:
+    _HAS_STREAMLIT = False
+
+
 class ConexionDB:
     def __init__(self):
-        # Nombre del servidor donde está instalado SQL Server.
-        self.server = "localhost"  
-        # Nombre de la base de datos a la que se desea conectar.
+        self.server = "localhost"
         self.database = "PROYECTOPOO"
-        
-        self.driver = "{ODBC Driver 17 for SQL Server}"
-        # Variable donde se almacenará la conexión con SQL Server.
-        # Inicialmente no existe conexión.
+        self.username = None
+        self.password = None
+        self.driver = "ODBC Driver 17 for SQL Server"
+        self.use_trusted_connection = True
         self.conn = None
-         # Variable donde se almacenará el cursor para ejecutar consultas SQL.
         self.cursor = None
-     # Método que establece la conexión con la base de datos.
+        self._cargar_configuracion()
+
+    def _cargar_configuracion(self):
+        if not _HAS_STREAMLIT:
+            return
+
+        try:
+            db = st.secrets["database"]
+            self.server = db["server"]
+            self.database = db["database"]
+            self.username = db.get("username")
+            self.password = db.get("password")
+            self.driver = db.get("driver", "ODBC Driver 17 for SQL Server")
+            self.use_trusted_connection = not (self.username and self.password)
+        except (KeyError, FileNotFoundError, AttributeError):
+            pass
+
     def conectar(self):
         try:
-            # Cadena de conexión con los datos necesarios.
-            conexion_str = (
-                f"DRIVER={self.driver};"  # Driver ODBC
-                f"SERVER={self.server};"  # Servidor SQL
-                f"DATABASE={self.database};" # Base de datos
-                "Trusted_Connection=yes;"
-                "Encrypt=no;"
-            )
-            # Crea la conexión utilizando la cadena anterior.
+            if self.use_trusted_connection:
+                conexion_str = (
+                    f"DRIVER={{{self.driver}}};"
+                    f"SERVER={self.server};"
+                    f"DATABASE={self.database};"
+                    "Trusted_Connection=yes;"
+                    "TrustServerCertificate=yes;"
+                )
+            else:
+                conexion_str = (
+                    f"DRIVER={{{self.driver}}};"
+                    f"SERVER={self.server};"
+                    f"DATABASE={self.database};"
+                    f"UID={self.username};"
+                    f"PWD={self.password};"
+                    "TrustServerCertificate=yes;"
+                )
+
             self.conn = pyodbc.connect(conexion_str)
-             # Crea un cursor para poder ejecutar instrucciones SQL.
             self.cursor = self.conn.cursor()
-         # Captura cualquier error que ocurra durante la conexión.
-        except pyodbc.Error as e:
-            # Muestra un mensaje indicando que ocurrió un error.
-            print(f"Error crítico al conectar a SQL Server: {e}")
-            raise e
-     # Método encargado de cerrar la conexión con la base de datos.
+            return self.conn
+
+        except Exception as e:
+            mensaje = "No se pudo conectar a la base de datos."
+            if _HAS_STREAMLIT:
+                st.error(mensaje)
+                st.exception(e)
+            else:
+                print(f"{mensaje} {e}")
+            return None
+
     def cerrar(self):
-         # Si existe un cursor, lo cierra.
         if self.cursor:
             self.cursor.close()
-        # Si existe una conexión, la cierra.
         if self.conn:
             self.conn.close()
