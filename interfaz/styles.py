@@ -34,11 +34,36 @@ def aplicar_estilos():
                 background: linear-gradient(180deg, {COLOR_NEGRO} 0%, {COLOR_NEGRO_SUAVE} 100%);
                 border-right: 3px solid {COLOR_ROJO};
             }}
+            [data-testid="stSidebarNav"] {{
+                display: none !important;
+            }}
+            [data-testid="stSidebar"] p,
+            [data-testid="stSidebar"] span,
+            [data-testid="stSidebar"] label,
+            [data-testid="stSidebar"] .stMarkdown,
+            [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {{
+                color: {COLOR_BLANCO} !important;
+            }}
+            [data-testid="stSidebar"] .stSelectbox label {{
+                color: #e8e8e8 !important;
+            }}
+            [data-testid="stSidebar"] [data-baseweb="select"] {{
+                background-color: {COLOR_NEGRO_SUAVE} !important;
+            }}
+            [data-testid="stSidebar"] [data-baseweb="select"] * {{
+                color: {COLOR_BLANCO} !important;
+            }}
             [data-testid="stSidebar"] .stRadio label {{
                 color: {COLOR_BLANCO} !important;
             }}
             [data-testid="stSidebar"] .stRadio label:hover {{
                 color: {COLOR_VERDE} !important;
+            }}
+            [data-testid="stSidebar"] [data-testid="stAlert"] {{
+                color: {COLOR_NEGRO} !important;
+            }}
+            [data-testid="stSidebar"] [data-testid="stAlert"] * {{
+                color: {COLOR_NEGRO} !important;
             }}
             [data-testid="stMetric"] {{
                 background-color: {COLOR_BLANCO};
@@ -81,6 +106,17 @@ def aplicar_estilos():
             .stButton > button:hover {{
                 background-color: {COLOR_NEGRO};
                 color: {COLOR_BLANCO};
+            }}
+            .role-icon {{
+                font-size: 2.4rem;
+                text-align: center;
+                margin: 0;
+                line-height: 1;
+            }}
+            div[data-testid="stVerticalBlockBorderWrapper"] {{
+                border-top: 4px solid {COLOR_ROJO} !important;
+                background: {COLOR_BLANCO};
+                padding: 4px 0;
             }}
             .role-badge {{
                 display:inline-block;
