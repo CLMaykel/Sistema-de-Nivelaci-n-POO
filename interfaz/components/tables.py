@@ -1,6 +1,9 @@
 from modelos.admin import Administrador
 from modelos.docente import Docente
 from modelos.estudiante import Estudiante
+
+
+def usuario_to_dict(usuario):
     if isinstance(usuario, Estudiante):
         tipo = "Estudiante"
     elif isinstance(usuario, Docente):
