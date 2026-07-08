@@ -107,11 +107,23 @@ def aplicar_estilos():
                 background-color: {COLOR_NEGRO};
                 color: {COLOR_BLANCO};
             }}
+            .role-icon-wrap {{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 90px;
+                padding: 8px 4px;
+            }}
             .role-icon {{
-                font-size: 2.4rem;
-                text-align: center;
-                margin: 0;
+                font-size: 4rem;
                 line-height: 1;
+                display: block;
+            }}
+            .role-desc {{
+                color: {COLOR_GRIS_OSCURO};
+                font-size: 1rem;
+                line-height: 1.5;
+                margin: 0;
             }}
             div[data-testid="stVerticalBlockBorderWrapper"] {{
                 border-top: 4px solid {COLOR_ROJO} !important;

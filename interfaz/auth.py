@@ -77,14 +77,17 @@ def pantalla_seleccion_rol(sistema):
 
     for rol, info in ROLES.items():
         with st.container(border=True):
-            icono_col, texto_col, boton_col = st.columns([1, 5, 2])
+            icono_col, texto_col, boton_col = st.columns([2, 5, 2])
 
             with icono_col:
-                st.markdown(f"<p class='role-icon'>{info['icono']}</p>", unsafe_allow_html=True)
+                st.markdown(
+                    f"<div class='role-icon-wrap'><span class='role-icon'>{info['icono']}</span></div>",
+                    unsafe_allow_html=True,
+                )
 
             with texto_col:
-                st.markdown(f"**{rol}**")
-                st.write(info["descripcion"])
+                st.markdown(f"### {rol}")
+                st.markdown(f"<p class='role-desc'>{info['descripcion']}</p>", unsafe_allow_html=True)
 
             with boton_col:
                 st.markdown("<div style='padding-top:12px;'></div>", unsafe_allow_html=True)
