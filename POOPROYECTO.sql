@@ -109,3 +109,15 @@ CREATE TABLE CursoNivelacion(
     FOREIGN KEY(id_aula)
         REFERENCES Aula(id_aula)
 );
+
+CREATE TABLE Matricula(
+    id_matricula INT PRIMARY KEY,
+    fecha_matricula DATE,
+    tipo_matricula VARCHAR(40),
+    id_periodo INT NOT NULL,
+    estado VARCHAR(20),
+    observaciones VARCHAR(255),
+
+    FOREIGN KEY(id_periodo)
+        REFERENCES PeriodoAcademico(id_periodo)
+);
