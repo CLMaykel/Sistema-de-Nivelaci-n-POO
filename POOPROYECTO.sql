@@ -62,3 +62,13 @@ CREATE TABLE Carrera(
     FOREIGN KEY(id_facultad)
         REFERENCES Facultad(id_facultad)
 );
+
+CREATE TABLE Aula(
+    id_aula INT PRIMARY KEY,
+    codigo VARCHAR(20),
+    nombre VARCHAR(100),
+    capacidad INT,
+    piso INT,
+    edificio VARCHAR(100),
+    estado BIT
+);
