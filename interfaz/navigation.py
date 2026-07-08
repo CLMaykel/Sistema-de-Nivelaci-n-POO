@@ -39,9 +39,8 @@ def obtener_opciones_por_rol(rol):
 
 
 def navegar_a(opcion):
-    """Sincroniza sidebar y contenido al elegir un modulo desde el dashboard."""
+    """Cambia la vista activa desde un boton del dashboard."""
     st.session_state.nav_seleccion = opcion
-    st.session_state.nav_radio = opcion
     st.rerun()
 
 

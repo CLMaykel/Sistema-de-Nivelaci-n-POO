@@ -131,16 +131,11 @@ def main():
     if st.session_state.nav_seleccion not in opciones:
         st.session_state.nav_seleccion = opciones[0]
 
-    if st.session_state.get("nav_radio") not in opciones:
-        st.session_state.nav_radio = st.session_state.nav_seleccion
-
-    indice_nav = opciones.index(st.session_state.nav_seleccion)
     opcion = st.sidebar.radio(
         "Navegacion",
         opciones,
-        index=indice_nav,
+        index=opciones.index(st.session_state.nav_seleccion),
         label_visibility="collapsed",
-        key="nav_radio",
     )
     st.session_state.nav_seleccion = opcion
 
