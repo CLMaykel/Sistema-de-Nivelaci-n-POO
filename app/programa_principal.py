@@ -24,9 +24,12 @@ def main():
 
     # Usar el patrón Factory para crear diferentes tipos de usuarios
     fabrica = FabricaUsuario()
+    # Se Crear docente
     docente1 = fabrica.crear_usuario("Docente", 1, "1300001111", "Valentin", "Perez", "perez123@uleam.edu.ec", "doc123", "0991234567", "Magister en Software", "Programacion OO")
+    # Se Crea estudiantes
     estudiante1 = fabrica.crear_usuario("Estudiante", 2, "1300002222", "Maykel", "Castro", "mcastro@uleam.edu.ec", "est123", "0997654321", "Cedula", "2005-03-15")
     estudiante2 = fabrica.crear_usuario("Estudiante", 3, "1300003333", "Bryan", "Chiquito", "bchiquito@uleam.edu.ec", "est456", "0994567890", "Cedula", "2004-07-22")
+    # Se Crear administrador
     admin1 = fabrica.crear_usuario("Administrador", 4, "1300004444", "Carlos", "Ortiz", "cortiz@uleam.edu.ec", "adm123", "0993456789", 1, "Director de Nivelacion")
 
     # Demostración de Polimorfismo: el método mostrar_info() se ejecuta de forma diferente
@@ -35,7 +38,7 @@ def main():
     print("")
     lista_usuarios = [docente1, estudiante1, admin1]
     for usuario in lista_usuarios:
-        usuario.mostrar_info()
+        usuario.mostrar_info()  # Comportamiento diferente según el tipo
         print("")
 
     # Método estático de la clase Usuario para validar formato de correo
@@ -49,9 +52,12 @@ def main():
 
     # Crear curso de nivelación con aula y horario asignados
     print("Creando curso de nivelacion")
+      # Crear aula y horario
     aula1 = Aula(1, "A101", "Aula 101", 35, 1, "Bloque A")
     horario1 = Horario(1, "Lunes", "08:00", "10:00", "Presencial", "A", aula1)
+     # Crear curso con docente, horario y aula asignados
     curso1 = CursoNivelacion(1, "POO-001", "Programacion Orientada a Objetos", "Nivelacion", "A", 30, docente1, horario1, aula1)
+    # Agregar estudiantes al curso
     curso1.agregar_estudiante(estudiante1)
     curso1.agregar_estudiante(estudiante2)
     curso1.mostrar_info()
@@ -71,6 +77,7 @@ def main():
         registrar_usuario.mostrar_info()
 
     # utilizamos el patron facade para matricular estudiantes en un curso de nivelacion
+    #Este patrón va a simplificar el proceso 
     print("Usando el patron facade para matricular estudiantes")
     periodo1 = PeriodoAcademico(1, "2026-1", "2026-01-01", "2026-06-30", "Abierto")
     facade = MatriculaFacade(periodo1, curso1, estudiante1)
@@ -91,7 +98,7 @@ def main():
     formatos_solicitados = ["PDF", "Excel"]
     for formato in formatos_solicitados:     #hacemos un for para iterar sobre los formatos solicitados y generar los reportes correspondientes
         print(f"--- Cliente solicita reporte en formato: {formato} ---")
-        reporte = sistema.generar_reporte(
+        reporte = sistema.generar_reporte(                                                # El sistema genera el reporte con la estrategia adecuada
             "Asistencia", "2026-1", "Reporte general de asistencia", formato
         )
         reporte.generar_reporte()
