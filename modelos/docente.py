@@ -1,4 +1,8 @@
 from modelos.usuario import Usuario
+    """
+    Clase que representa a un docente en el sistema.
+    Hereda de Usuario y gestiona notas, asistencia y reportes.
+    """
 class Docente(Usuario):                           #se inicializan los atributos heredados y propios
     def __init__(self, id_usuario, cedula, nombres, apellidos, correo, contraseña, telefono, titulo_profesional, especialidad):
         super().__init__(id_usuario, cedula, nombres, apellidos, correo, contraseña, telefono) 
@@ -21,12 +25,18 @@ class Docente(Usuario):                           #se inicializan los atributos 
     @especialidad.setter
     def especialidad(self, valor):
         self.__especialidad = valor
-#se registra las notas de un estudiante usando kwargs
     def registrar_notas(self, id_calificacion, id_estudiante, parcial1, parcial2, **kwargs):
+        """
+        Registra notas de un estudiante.
+        Args:
+            parcial1, parcial2: Notas entre 0-10
+            **kwargs: observacion, fecha (opcionales)
+        """
         #se valida que las notas estén entre 0 y 10
         if parcial1 < 0 or parcial1 > 10 or parcial2 < 0 or parcial2 > 10:
             print("Las notas deben estar entre 0 y 10")
             return
+            # Calcular nota final
         nota_final = round((parcial1 + parcial2) / 2, 2)
     #se crea un diccionario con la información de la calificación
         nota = {
@@ -36,6 +46,7 @@ class Docente(Usuario):                           #se inicializan los atributos 
             "parcial2": parcial2,
             "nota_final": nota_final
         }
+        # Agregar campos opcionales
         if "observacion" in kwargs:
             nota["observacion"] = kwargs["observacion"]
         if "fecha" in kwargs:
@@ -43,24 +54,32 @@ class Docente(Usuario):                           #se inicializan los atributos 
         self.__notas_registradas.append(nota)
         print("Nota registrada para el estudiante " + str(id_estudiante) + " nota final: " + str(nota_final))
 #sobrecarga simulada con args
+     """
+        Registra asistencia de múltiples estudiantes.  
+        Args:
+            fecha (str): Fecha de asistencia
+            estado (str): presente, ausente, justificado, tardanza
+            *args: IDs de estudiantes
+        """
     def registrar_asistencia(self, fecha, estado, *args):
         for id_estudiante in args: #recorre cada estudiante enviado en args
             print("Asistencia registrada para el estudiante " + str(id_estudiante) + " el " + fecha + " estado: " + estado)
 
     def consultar_estudiantes(self, curso):
-        return curso.lista_estudiantes
+        return curso.lista_estudiantes       #Retorna la lista de estudiantes de un curso.
 #sobrecarga simulada con kwargs
-    def generar_reporte(self, **kwargs):
+    def generar_reporte(self, **kwargs):     #Genera reporte del docente.
         print("Reporte del docente: " + self.nombres + " " + self.apellidos)
         print("Titulo: " + self.__titulo_profesional)
         print("Especialidad: " + self.__especialidad)
         if "periodo" in kwargs:
             print("Periodo: " + kwargs["periodo"])
+            # Mostrar detalle de notas si se solicita
         if "incluir_notas" in kwargs and kwargs["incluir_notas"] == True:
             print("Notas registradas: " + str(len(self.__notas_registradas)))
         else:
             print("Notas registradas: " + str(len(self.__notas_registradas)))
-#método sobreescrito para iniciar sesión  
+#Sobrescribe método de Usuario para inicio de sesión.
     def iniciar_sesion(self, contraseña):
         if self.contraseña == contraseña and self.estado == True:
             print("Inicio de sesion como docente correctamente para " + self.nombres + " " + self.apellidos)
@@ -68,7 +87,10 @@ class Docente(Usuario):                           #se inicializan los atributos 
         else:
             print("Contraseña incorrecta o usuario inactivo")
             return False
-#sobreescribe el metodo de Usuario, aqui se aplica el poliformismo
+        """
+        Sobrescribe método de Usuario (polimorfismo).
+        Muestra información completa del docente.
+        """
     def mostrar_info(self):
         print("Docente: " + self.nombres + " " + self.apellidos)
         print("Cedula: " + self.cedula)
