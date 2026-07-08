@@ -61,26 +61,27 @@ def main():
     carga1 = CargaAcademica(1, estudiante1, "2026-1", 1, 4)
     carga1.generar_carga()
     print("")
-
+    
+    # utilizamos el patron facade para matricular estudiantes en un curso de nivelacion
     print("Usando el patron facade para matricular estudiantes")
     periodo1 = PeriodoAcademico(1, "2026-1", "2026-01-01", "2026-06-30", "Abierto")
     facade = MatriculaFacade(periodo1, curso1, estudiante1)
-    facade.matricular(1, "2026-01-10", "Regular")
+    facade.matricular(1, "2026-01-10", "Regular")   #le pasamos los parametros id_matricula, fecha y tipo de matricula
     print("")
 
-    # ================================================================
+    
     # Patron Strategy: el cliente (SistemaNivelacion.generar_reporte)
     # decide en tiempo de ejecucion QUE estrategia de exportacion usar
     # (ExportarPDF o ExportarExcel), y Reporte (el contexto) no conoce
     # ni le importa cual fue: solo delega en el objeto que recibio.
-    # ================================================================
     print("Patron Strategy - generacion de reportes en distintos formatos")
     print("")
 
     sistema = SistemaNivelacion()
-
+    
+    # le pasamos al sistema un reporte de asistencia en formato PDF y otro en formato Excel
     formatos_solicitados = ["PDF", "Excel"]
-    for formato in formatos_solicitados:
+    for formato in formatos_solicitados:     #hacemos un for para iterar sobre los formatos solicitados y generar los reportes correspondientes
         print(f"--- Cliente solicita reporte en formato: {formato} ---")
         reporte = sistema.generar_reporte(
             "Asistencia", "2026-1", "Reporte general de asistencia", formato
@@ -88,7 +89,8 @@ def main():
         reporte.generar_reporte()
         reporte.exportar()  # <- mismo metodo, comportamiento distinto segun la estrategia inyectada
         print("")
-
+    
+    # Mostramos los reportes generados en el sistema
     print("Reportes generados en el sistema:")
     for reporte in sistema.reportes:
         print(f"Reporte {reporte.id_reporte} | {reporte.tipo_reporte} | {reporte.periodo} | Formato: {reporte.formato}")
@@ -96,4 +98,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
