@@ -4,11 +4,13 @@ from interfaz.components.cards import metric_card
 
 
 def intro_modulo(descripcion, icono=""):
+    # Muestra una descripción del módulo con ícono opcional
     prefijo = f"{icono} " if icono else ""
     st.markdown(f"{prefijo}{descripcion}")
 
 
 def fila_metricas(metricas, columnas=4):
+    # Distribuye métricas en columnas y las muestra con tarjetas
     cols = st.columns(columnas)
     for indice, (etiqueta, valor) in enumerate(metricas):
         with cols[indice % columnas]:
@@ -16,6 +18,7 @@ def fila_metricas(metricas, columnas=4):
 
 
 def tabla_o_vacio(filas, mensaje):
+    # Muestra una tabla si hay datos, sino muestra un mensaje informativo
     if not filas:
         st.info(mensaje)
         return False
@@ -24,12 +27,14 @@ def tabla_o_vacio(filas, mensaje):
 
 
 def detalle_entidad(titulo, campos):
+    # Muestra detalles expandibles de una entidad con sus campos
     with st.expander(titulo, expanded=False):
         for etiqueta, valor in campos:
             st.write(f"**{etiqueta}:** {valor}")
 
 
 def tarjetas_navegacion(modulos, prefijo_clave="modulo", columnas=2):
+    # Crea tarjetas de navegación para acceder a diferentes módulos
     from interfaz.idioma import t
     from interfaz.navigation import navegar_a
 
