@@ -172,7 +172,7 @@ CREATE TABLE DetalleAsistencia(
     documento_soporte VARCHAR(255),
     FOREIGN KEY(id_asistencia) REFERENCES Asistencia(id_asistencia)
 );
--- Guarda información adicional de una asistencia.
+-- Guarda las notas generales de cada estudiante.
 CREATE TABLE Calificacion(
     id_calificacion INT PRIMARY KEY,
     nota_parcial1 DECIMAL(5,2),
@@ -197,7 +197,7 @@ CREATE TABLE DetalleCalificacion(
     fecha_evaluacion DATE,
     FOREIGN KEY(id_calificacion) REFERENCES Calificacion(id_calificacion)
 );
-
+-- Guarda los reportes generados por el sistema.
 CREATE TABLE Reporte(
     id_reporte INT PRIMARY KEY,
     tipo_reporte VARCHAR(50),
@@ -208,6 +208,7 @@ CREATE TABLE Reporte(
     FOREIGN KEY(id_periodo) REFERENCES PeriodoAcademico(id_periodo)
 );
 GO
+-- Se insertan datos de prueba para facilitar las pruebas del sistema.
 
 -- Datos iniciales (usuarios de prueba, periodos, curso POO-001, etc.)
 INSERT INTO Facultad VALUES (1, 'Facultad de Ingenieria Informatica y Ciencias Computacionales');
