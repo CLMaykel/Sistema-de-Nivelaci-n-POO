@@ -14,6 +14,7 @@ from interfaz.branding import (
 
 
 def aplicar_estilos():
+    """Aplica los estilos CSS principales a toda la interfaz de la aplicación"""
     st.markdown(
         f"""
         <style>
@@ -180,6 +181,7 @@ def aplicar_estilos():
 
 
 def aplicar_estilos_login():
+    """Aplica estilos CSS específicos para la página de login"""
     st.markdown(
         f"""
         <style>
@@ -303,6 +305,7 @@ def aplicar_estilos_login():
 
 
 def pie_pagina():
+    """Renderiza el pie de página con información de la universidad"""
     st.markdown(
         f'<hr style="border:none;border-top:2px solid {COLOR_VERDE};margin-top:24px;">',
         unsafe_allow_html=True,
