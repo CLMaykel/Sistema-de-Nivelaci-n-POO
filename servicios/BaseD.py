@@ -21,6 +21,7 @@ class ConexionDB:
         self.ultimo_error = None
         self._cargar_configuracion()
 
+    # Carga la configuración de la base de datos desde secrets.toml
     def _cargar_configuracion(self):
         if not _HAS_STREAMLIT:
             return
@@ -36,6 +37,7 @@ class ConexionDB:
         except (KeyError, FileNotFoundError, AttributeError):
             pass
 
+    # Establece la conexión a SQL Server
     def conectar(self, silencioso=True):
         self.ultimo_error = None
         try:
@@ -71,6 +73,7 @@ class ConexionDB:
                 print(f"No se pudo conectar a la base de datos. {e}")
             return None
 
+    # Ejecuta una consulta SQL de modificación (INSERT, UPDATE, DELETE)
     def ejecutar(self, query, params=None):
         if params:
             self.cursor.execute(query, params)
@@ -78,6 +81,7 @@ class ConexionDB:
             self.cursor.execute(query)
         self.conn.commit()
 
+    # Ejecuta una consulta SQL y retorna un único registro
     def consultar_uno(self, query, params=None):
         if params:
             self.cursor.execute(query, params)
@@ -85,6 +89,7 @@ class ConexionDB:
             self.cursor.execute(query)
         return self.cursor.fetchone()
 
+    # Ejecuta una consulta SQL y retorna todos los registros
     def consultar_todos(self, query, params=None):
         if params:
             self.cursor.execute(query, params)
@@ -92,10 +97,12 @@ class ConexionDB:
             self.cursor.execute(query)
         return self.cursor.fetchall()
 
+    # Obtiene el siguiente ID disponible para una tabla
     def siguiente_id(self, tabla, columna):
         fila = self.consultar_uno(f"SELECT ISNULL(MAX({columna}), 0) + 1 FROM {tabla}")
         return fila[0] if fila else 1
 
+    # Cierra la conexión y el cursor
     def cerrar(self):
         if self.cursor:
             self.cursor.close()
@@ -104,10 +111,12 @@ class ConexionDB:
             self.conn.close()
             self.conn = None
 
+    # Context manager: abre la conexión al entrar
     def __enter__(self):
         self.conectar()
         return self
 
+    # Context manager: cierra la conexión al salir
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_type and self.conn:
             self.conn.rollback()
