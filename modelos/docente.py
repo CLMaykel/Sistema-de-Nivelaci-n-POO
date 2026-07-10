@@ -11,7 +11,8 @@ class Docente(Usuario):
         self.__titulo_profesional = titulo_profesional
         self.__especialidad = especialidad
         self.__notas_registradas = []
-#setter
+
+    # Getter y setter para acceder a los atributos privados
     @property
     def titulo_profesional(self):
         return self.__titulo_profesional
@@ -27,6 +28,8 @@ class Docente(Usuario):
     @especialidad.setter
     def especialidad(self, valor):
         self.__especialidad = valor
+
+    # Registra las notas de un estudiante con validación
     def registrar_notas(self, id_calificacion, id_estudiante, parcial1, parcial2, **kwargs):
         """
         Registra notas de un estudiante.
@@ -34,13 +37,13 @@ class Docente(Usuario):
             parcial1, parcial2: Notas entre 0-10
             **kwargs: observacion, fecha (opcionales)
         """
-        #se valida que las notas estén entre 0 y 10
+        # Valida que las notas estén entre 0 y 10
         if parcial1 < 0 or parcial1 > 10 or parcial2 < 0 or parcial2 > 10:
             print("Las notas deben estar entre 0 y 10")
             return
-            # Calcular nota final
+        # Calcula la nota final promediando los dos parciales
         nota_final = round((parcial1 + parcial2) / 2, 2)
-    #se crea un diccionario con la información de la calificación
+        # Crea un diccionario con la información de la calificación
         nota = {
             "id_calificacion": id_calificacion,
             "id_estudiante": id_estudiante,
@@ -48,7 +51,7 @@ class Docente(Usuario):
             "parcial2": parcial2,
             "nota_final": nota_final
         }
-        # Agregar campos opcionales
+        # Agrega campos opcionales (observación y fecha)
         if "observacion" in kwargs:
             nota["observacion"] = kwargs["observacion"]
         if "fecha" in kwargs:
@@ -56,28 +59,35 @@ class Docente(Usuario):
         self.__notas_registradas.append(nota)
         print("Nota registrada para el estudiante " + str(id_estudiante) + " nota final: " + str(nota_final))
 
+    # Registra la asistencia de uno o múltiples estudiantes
     def registrar_asistencia(self, fecha, estado, *args):
         """
-        Registra asistencia de multiples estudiantes.
+        Registra asistencia de múltiples estudiantes.
         """
-        for id_estudiante in args: #recorre cada estudiante enviado en args
+        # Recorre cada estudiante enviado en args
+        for id_estudiante in args:
             print("Asistencia registrada para el estudiante " + str(id_estudiante) + " el " + fecha + " estado: " + estado)
 
+    # Retorna la lista de estudiantes de un curso
     def consultar_estudiantes(self, curso):
-        return curso.lista_estudiantes       #Retorna la lista de estudiantes de un curso.
-#sobrecarga simulada con kwargs
-    def generar_reporte(self, **kwargs):     #Genera reporte del docente.
+        return curso.lista_estudiantes
+
+    # Genera un reporte del docente con información opcional
+    def generar_reporte(self, **kwargs):
+        """Genera reporte del docente."""
         print("Reporte del docente: " + self.nombres + " " + self.apellidos)
         print("Titulo: " + self.__titulo_profesional)
         print("Especialidad: " + self.__especialidad)
+        # Muestra período si se proporciona en kwargs
         if "periodo" in kwargs:
             print("Periodo: " + kwargs["periodo"])
-            # Mostrar detalle de notas si se solicita
+        # Muestra detalle de notas registradas
         if "incluir_notas" in kwargs and kwargs["incluir_notas"] == True:
             print("Notas registradas: " + str(len(self.__notas_registradas)))
         else:
             print("Notas registradas: " + str(len(self.__notas_registradas)))
-#Sobrescribe método de Usuario para inicio de sesión.
+
+    # Sobrescribe el método de Usuario para inicio de sesión específico de docentes
     def iniciar_sesion(self, contraseña):
         if self.contraseña == contraseña and self.estado == True:
             print("Inicio de sesion como docente correctamente para " + self.nombres + " " + self.apellidos)
@@ -86,6 +96,7 @@ class Docente(Usuario):
             print("Contraseña incorrecta o usuario inactivo")
             return False
 
+    # Muestra la información del docente (polimorfismo)
     def mostrar_info(self):
         """Sobrescribe metodo de Usuario (polimorfismo)."""
         print("Docente: " + self.nombres + " " + self.apellidos)
