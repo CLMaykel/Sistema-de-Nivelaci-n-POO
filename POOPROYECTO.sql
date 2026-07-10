@@ -86,7 +86,7 @@ CREATE TABLE Carrera(
     id_facultad INT NOT NULL,
     FOREIGN KEY(id_facultad) REFERENCES Facultad(id_facultad)
 );
-
+-- Guarda la información de las aulas.
 CREATE TABLE Aula(
     id_aula INT PRIMARY KEY,
     codigo VARCHAR(20),
@@ -96,7 +96,7 @@ CREATE TABLE Aula(
     edificio VARCHAR(100),
     estado BIT DEFAULT 1
 );
-
+-- Contiene los horarios de los cursos.
 CREATE TABLE Horario(
     id_horario INT PRIMARY KEY,
     dia VARCHAR(20),
@@ -107,7 +107,7 @@ CREATE TABLE Horario(
     id_aula INT NOT NULL,
     FOREIGN KEY(id_aula) REFERENCES Aula(id_aula)
 );
-
+-- Almacena la información de los cursos.
 CREATE TABLE CursoNivelacion(
     id_curso INT PRIMARY KEY,
     codigo VARCHAR(20),
@@ -124,7 +124,7 @@ CREATE TABLE CursoNivelacion(
     FOREIGN KEY(id_horario) REFERENCES Horario(id_horario),
     FOREIGN KEY(id_aula) REFERENCES Aula(id_aula)
 );
-
+-- Relaciones con otras tablas.
 CREATE TABLE Matricula(
     id_matricula INT PRIMARY KEY,
     fecha_matricula DATE,
@@ -138,7 +138,7 @@ CREATE TABLE Matricula(
     FOREIGN KEY(id_estudiante) REFERENCES Estudiante(id_usuario),
     FOREIGN KEY(id_curso) REFERENCES CursoNivelacion(id_curso)
 );
-
+-- Registra la inscripción de un estudiante en un curso.
 CREATE TABLE CargaAcademica(
     id_carga INT PRIMARY KEY,
     id_estudiante INT NOT NULL,
@@ -149,7 +149,7 @@ CREATE TABLE CargaAcademica(
     FOREIGN KEY(id_estudiante) REFERENCES Estudiante(id_usuario),
     FOREIGN KEY(id_periodo) REFERENCES PeriodoAcademico(id_periodo)
 );
-
+-- Guarda la carga académica de cada estudiante.
 CREATE TABLE Asistencia(
     id_asistencia INT PRIMARY KEY,
     fecha DATE,
@@ -163,7 +163,7 @@ CREATE TABLE Asistencia(
     FOREIGN KEY(id_curso) REFERENCES CursoNivelacion(id_curso),
     FOREIGN KEY(id_docente) REFERENCES Docente(id_usuario)
 );
-
+-- Registra la asistencia diaria de los estudiantes.
 CREATE TABLE DetalleAsistencia(
     id_detalle_asistencia INT IDENTITY(1,1) PRIMARY KEY,
     id_asistencia INT NOT NULL,
@@ -172,7 +172,7 @@ CREATE TABLE DetalleAsistencia(
     documento_soporte VARCHAR(255),
     FOREIGN KEY(id_asistencia) REFERENCES Asistencia(id_asistencia)
 );
-
+-- Guarda información adicional de una asistencia.
 CREATE TABLE Calificacion(
     id_calificacion INT PRIMARY KEY,
     nota_parcial1 DECIMAL(5,2),
@@ -186,7 +186,7 @@ CREATE TABLE Calificacion(
     FOREIGN KEY(id_curso) REFERENCES CursoNivelacion(id_curso),
     FOREIGN KEY(id_docente) REFERENCES Docente(id_usuario)
 );
-
+-- Guarda las notas generales de cada estudiante.
 CREATE TABLE DetalleCalificacion(
     id_detalle INT PRIMARY KEY,
     id_calificacion INT NOT NULL,
