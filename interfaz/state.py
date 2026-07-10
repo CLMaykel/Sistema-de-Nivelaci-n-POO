@@ -11,6 +11,7 @@ from servicios.sistema_nivelacion import SistemaNivelacion
 
 
 def get_sistema():
+    # Obtiene o inicializa la instancia del sistema de nivelación en la sesión
     if "sistema" not in st.session_state:
         sistema = SistemaNivelacion()
         ok, mensaje, modo = sistema.inicializar_datos()
