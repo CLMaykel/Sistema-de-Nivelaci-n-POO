@@ -10,6 +10,7 @@ from modelos.estudiante import Estudiante
 
 
 def inicializar_sesion():
+    # Inicializa el estado de sesión con variables de autenticación y navegación
     obtener_gestor_idioma().obtener_idioma()
     if "autenticado" not in st.session_state:
         st.session_state.autenticado = False
@@ -24,6 +25,7 @@ def inicializar_sesion():
 
 
 def cerrar_sesion():
+    # Limpia el estado de sesión y cierra la sesión del usuario
     st.session_state.autenticado = False
     st.session_state.rol_actual = None
     st.session_state.usuario_actual_id = None
@@ -33,14 +35,17 @@ def cerrar_sesion():
 
 
 def esta_autenticado():
+    # Verifica si el usuario tiene una sesión autenticada con rol asignado
     return bool(st.session_state.get("autenticado") and st.session_state.get("rol_actual"))
 
 
 def obtener_rol_actual():
+    # Retorna el rol del usuario autenticado actual
     return st.session_state.get("rol_actual")
 
 
 def obtener_usuario_actual(sistema):
+    # Retorna el objeto de usuario desde el sistema si está autenticado
     if not esta_autenticado():
         return None
 
@@ -52,6 +57,7 @@ def obtener_usuario_actual(sistema):
 
 
 def _rol_desde_usuario(usuario):
+    # Determina el rol del usuario según su tipo de clase
     if isinstance(usuario, Administrador):
         return "Administrador"
     if isinstance(usuario, Docente):
@@ -62,6 +68,7 @@ def _rol_desde_usuario(usuario):
 
 
 def _dashboard_por_rol(rol):
+    # Retorna el dashboard inicial según el rol del usuario
     return {
         "Administrador": "Dashboard",
         "Docente": "Dashboard Docente",
@@ -70,6 +77,7 @@ def _dashboard_por_rol(rol):
 
 
 def autenticar_usuario(sistema, identificador, contrasena):
+    # Autentica un usuario verificando credenciales y asigna rol y datos de sesión
     usuario = sistema.buscar_usuario_por_identificador(identificador)
     if not usuario:
         return False, t("login.error_usuario")
@@ -91,6 +99,7 @@ def autenticar_usuario(sistema, identificador, contrasena):
 
 
 def _logo_base64(ruta):
+    # Convierte una imagen de logo a formato base64 para incrustar en HTML
     if not ruta.exists():
         return None
     mime = "image/png" if ruta.suffix.lower() == ".png" else "image/jpeg"
@@ -99,6 +108,7 @@ def _logo_base64(ruta):
 
 
 def render_barra_superior():
+    # Renderiza la barra superior con logo y selector de idioma
     st.markdown('<div class="uleam-topbar-wrap">', unsafe_allow_html=True)
     col_logo, col_lang = st.columns([5, 1])
 
@@ -115,6 +125,7 @@ def render_barra_superior():
 
 
 def pantalla_login(sistema):
+    # Renderiza la pantalla de login con formulario de autenticación y credenciales demo
     from interfaz.styles import aplicar_estilos_login
 
     aplicar_estilos_login()
@@ -187,4 +198,5 @@ def pantalla_login(sistema):
 
 
 def pantalla_seleccion_rol(sistema):
+    # Muestra la pantalla de login (alias para pantalla_login)
     pantalla_login(sistema)
