@@ -41,6 +41,7 @@ from interfaz.vistas.reportes import mostrar_reportes
 from interfaz.vistas.reportes_docente import mostrar_reportes_docente
 from interfaz.vistas.usuarios import mostrar_usuarios
 
+# Diccionario que mapea nombres de rutas a funciones de vistas
 RUTAS = {
     "Dashboard": mostrar_dashboard,
     "Usuarios": mostrar_usuarios,
@@ -64,6 +65,7 @@ RUTAS = {
 
 
 def _render_sidebar_sesion(sistema, rol, usuario):
+    # Renderiza el sidebar con información de sesión, idioma y opciones de usuario
     gestor = obtener_gestor_idioma()
 
     mostrar_logo_sidebar()
@@ -95,6 +97,7 @@ def _render_sidebar_sesion(sistema, rol, usuario):
 
 
 def main():
+    # Función principal que configura la aplicación y renderiza vistas según autenticación y rol
     page_icon = str(RUTA_LOGO) if RUTA_LOGO.exists() else "🎓"
     st.set_page_config(
         page_title=TITULO_APP,
