@@ -1,11 +1,80 @@
-"""Importacion de datasets universitarios desde archivos CSV."""
+"""Importacion de datasets universitarios desde un CSV unificado acoplado."""
 
 import csv
 import io
+from collections import defaultdict
 from dataclasses import dataclass, field
 
 from modelos.docente import Docente
 from modelos.estudiante import Estudiante
+
+ORDEN_TIPOS_REGISTRO = [
+    "periodo",
+    "docente",
+    "estudiante",
+    "administrador",
+    "aula",
+    "horario",
+    "curso",
+    "matricula",
+    "carga_academica",
+    "calificacion",
+    "asistencia",
+]
+
+COLUMNAS_MODELO = [
+    "tipo_registro",
+    "periodo_nombre",
+    "fecha_inicio",
+    "fecha_fin",
+    "estado_periodo",
+    "cedula",
+    "nombres",
+    "apellidos",
+    "correo",
+    "contrasena",
+    "telefono",
+    "titulo_profesional",
+    "especialidad",
+    "cargo",
+    "tipo_documento",
+    "fecha_nacimiento",
+    "discapacidad",
+    "codigo_aula",
+    "nombre_aula",
+    "capacidad",
+    "piso",
+    "edificio",
+    "dia",
+    "hora_inicio",
+    "hora_fin",
+    "modalidad",
+    "grupo",
+    "aula_codigo",
+    "codigo_curso",
+    "nombre_curso",
+    "nivel",
+    "paralelo",
+    "cupo_maximo",
+    "docente_cedula",
+    "horario_dia",
+    "horario_hora_inicio",
+    "horario_hora_fin",
+    "horario_grupo",
+    "aula_codigo_curso",
+    "estudiante_cedula",
+    "curso_codigo",
+    "tipo_matricula",
+    "fecha_matricula",
+    "parcial1",
+    "parcial2",
+    "observacion_nota",
+    "fecha_asistencia",
+    "estado_asistencia",
+    "observacion_asistencia",
+]
+
+TIPOS_REGISTRO_VALIDOS = set(ORDEN_TIPOS_REGISTRO)
 
 
 @dataclass
@@ -19,6 +88,19 @@ class ResultadoImportacion:
     @property
     def hubo_exito(self) -> bool:
         return self.importadas > 0
+
+
+@dataclass
+class ResultadoImportacionDataset:
+    total_filas: int
+    importadas: int = 0
+    omitidas: int = 0
+    errores: list[str] = field(default_factory=list)
+    resumen_por_tipo: dict[str, dict] = field(default_factory=dict)
+
+    @property
+    def hubo_exito(self) -> bool:
+        return self.importadas > 0 and not self.errores
 
 
 def _normalizar_clave(clave: str) -> str:
@@ -104,195 +186,8 @@ def _buscar_horario(sistema, dia, hora_inicio, hora_fin, grupo, aula_codigo=""):
     raise ValueError(f"Horario no encontrado: {clave}")
 
 
-CONFIG_TIPOS = {
-    "periodos": {
-        "orden": 1,
-        "columnas_requeridas": ["nombre", "fecha_inicio", "fecha_fin"],
-        "columnas_opcionales": ["estado"],
-        "descripcion": "Periodos academicos del sistema",
-    },
-    "docentes": {
-        "orden": 2,
-        "columnas_requeridas": [
-            "cedula",
-            "nombres",
-            "apellidos",
-            "correo",
-            "contrasena",
-            "telefono",
-            "titulo_profesional",
-            "especialidad",
-        ],
-        "columnas_opcionales": [],
-        "descripcion": "Docentes de la universidad",
-    },
-    "estudiantes": {
-        "orden": 3,
-        "columnas_requeridas": [
-            "cedula",
-            "nombres",
-            "apellidos",
-            "correo",
-            "contrasena",
-            "telefono",
-            "tipo_documento",
-            "fecha_nacimiento",
-        ],
-        "columnas_opcionales": ["discapacidad"],
-        "descripcion": "Estudiantes de nivelacion",
-    },
-    "administradores": {
-        "orden": 4,
-        "columnas_requeridas": [
-            "cedula",
-            "nombres",
-            "apellidos",
-            "correo",
-            "contrasena",
-            "telefono",
-            "cargo",
-        ],
-        "columnas_opcionales": [],
-        "descripcion": "Administradores del sistema",
-    },
-    "aulas": {
-        "orden": 5,
-        "columnas_requeridas": ["codigo", "nombre", "capacidad", "piso", "edificio"],
-        "columnas_opcionales": [],
-        "descripcion": "Aulas y espacios fisicos",
-    },
-    "horarios": {
-        "orden": 6,
-        "columnas_requeridas": [
-            "dia",
-            "hora_inicio",
-            "hora_fin",
-            "modalidad",
-            "grupo",
-            "aula_codigo",
-        ],
-        "columnas_opcionales": [],
-        "descripcion": "Bloques horarios vinculados a aulas",
-    },
-    "cursos": {
-        "orden": 7,
-        "columnas_requeridas": [
-            "codigo",
-            "nombre",
-            "nivel",
-            "paralelo",
-            "cupo_maximo",
-            "docente_cedula",
-            "horario_dia",
-            "horario_hora_inicio",
-            "horario_hora_fin",
-            "horario_grupo",
-            "aula_codigo",
-        ],
-        "columnas_opcionales": [],
-        "descripcion": "Cursos de nivelacion",
-    },
-    "matriculas": {
-        "orden": 8,
-        "columnas_requeridas": ["estudiante_cedula", "curso_codigo"],
-        "columnas_opcionales": ["periodo_nombre", "tipo_matricula", "fecha_matricula"],
-        "descripcion": "Inscripciones de estudiantes en cursos",
-    },
-    "cargas_academicas": {
-        "orden": 9,
-        "columnas_requeridas": ["estudiante_cedula"],
-        "columnas_opcionales": ["periodo_nombre"],
-        "descripcion": "Cargas academicas por estudiante y periodo",
-    },
-    "calificaciones": {
-        "orden": 10,
-        "columnas_requeridas": [
-            "docente_cedula",
-            "curso_codigo",
-            "estudiante_cedula",
-            "parcial1",
-            "parcial2",
-        ],
-        "columnas_opcionales": ["observacion"],
-        "descripcion": "Notas parciales por estudiante y curso",
-    },
-    "asistencias": {
-        "orden": 11,
-        "columnas_requeridas": [
-            "docente_cedula",
-            "curso_codigo",
-            "estudiante_cedula",
-            "fecha",
-            "estado",
-        ],
-        "columnas_opcionales": ["observacion"],
-        "descripcion": "Registro de asistencia",
-    },
-}
-
-PLANTILLAS_CSV = {
-    "periodos": (
-        "nombre,fecha_inicio,fecha_fin,estado\n"
-        "2026-1,2026-01-01,2026-06-30,Abierto\n"
-    ),
-    "docentes": (
-        "cedula,nombres,apellidos,correo,contrasena,telefono,titulo_profesional,especialidad\n"
-        "1400006666,Maria,Gomez,mgomez@uleam.edu.ec,doc789,0994445566,Licenciada,Programacion OO\n"
-    ),
-    "estudiantes": (
-        "cedula,nombres,apellidos,correo,contrasena,telefono,tipo_documento,fecha_nacimiento,discapacidad\n"
-        "1400005555,Ana,Lopez,alopez@uleam.edu.ec,est789,0991112233,Cedula,2005-01-10,false\n"
-    ),
-    "administradores": (
-        "cedula,nombres,apellidos,correo,contrasena,telefono,cargo\n"
-        "1400007777,Luis,Ramirez,lramirez@uleam.edu.ec,adm789,0998887766,Coordinador\n"
-    ),
-    "aulas": (
-        "codigo,nombre,capacidad,piso,edificio\n"
-        "B201,Aula 201,40,2,Bloque B\n"
-    ),
-    "horarios": (
-        "dia,hora_inicio,hora_fin,modalidad,grupo,aula_codigo\n"
-        "Martes,10:00,12:00,Presencial,A,B201\n"
-    ),
-    "cursos": (
-        "codigo,nombre,nivel,paralelo,cupo_maximo,docente_cedula,horario_dia,horario_hora_inicio,"
-        "horario_hora_fin,horario_grupo,aula_codigo\n"
-        "POO-002,Programacion OO II,Nivelacion,B,25,1400006666,Martes,10:00,12:00,A,B201\n"
-    ),
-    "matriculas": (
-        "estudiante_cedula,curso_codigo,periodo_nombre,tipo_matricula,fecha_matricula\n"
-        "1400005555,POO-002,2026-1,Regular,2026-01-15\n"
-    ),
-    "cargas_academicas": (
-        "estudiante_cedula,periodo_nombre\n"
-        "1400005555,2026-1\n"
-    ),
-    "calificaciones": (
-        "docente_cedula,curso_codigo,estudiante_cedula,parcial1,parcial2,observacion\n"
-        "1400006666,POO-002,1400005555,8.0,9.0,Buen trabajo\n"
-    ),
-    "asistencias": (
-        "docente_cedula,curso_codigo,estudiante_cedula,fecha,estado,observacion\n"
-        "1400006666,POO-002,1400005555,2026-03-15,Presente,\n"
-    ),
-}
-
-
-def listar_tipos_entidad():
-    return sorted(CONFIG_TIPOS.keys(), key=lambda t: CONFIG_TIPOS[t]["orden"])
-
-
-def obtener_config_tipo(tipo: str) -> dict:
-    if tipo not in CONFIG_TIPOS:
-        raise ValueError(f"Tipo de entidad no soportado: {tipo}")
-    return CONFIG_TIPOS[tipo]
-
-
-def obtener_plantilla_csv(tipo: str) -> str:
-    if tipo not in PLANTILLAS_CSV:
-        raise ValueError(f"No hay plantilla para el tipo: {tipo}")
-    return PLANTILLAS_CSV[tipo]
+def obtener_plantilla_csv() -> str:
+    return ",".join(COLUMNAS_MODELO) + "\n"
 
 
 def leer_csv(contenido) -> list[dict]:
@@ -311,33 +206,45 @@ def leer_csv(contenido) -> list[dict]:
     filas = []
     for indice, fila in enumerate(lector, start=2):
         normalizada = _normalizar_fila(fila)
-        if any(str(v).strip() for v in normalizada.values()):
+        if any(str(v).strip() for k, v in normalizada.items() if k != "_fila_csv"):
             normalizada["_fila_csv"] = indice
             filas.append(normalizada)
     return filas
 
 
-def validar_columnas(filas: list[dict], tipo: str) -> list[str]:
-    config = obtener_config_tipo(tipo)
+def contar_por_tipo(filas: list[dict]) -> dict[str, int]:
+    conteo = defaultdict(int)
+    for fila in filas:
+        tipo = _valor(fila, "tipo_registro")
+        if tipo:
+            conteo[tipo] += 1
+    return dict(conteo)
+
+
+def validar_modelo_dataset(filas: list[dict]) -> list[str]:
     if not filas:
         return ["El archivo CSV no contiene filas de datos."]
 
-    faltantes = [
-        col
-        for col in config["columnas_requeridas"]
-        if col not in filas[0]
-    ]
-    if faltantes:
-        return [f"Faltan columnas requeridas: {', '.join(faltantes)}"]
-    return []
+    errores = []
+    if "tipo_registro" not in filas[0]:
+        return ["Falta la columna requerida: tipo_registro"]
+
+    for fila in filas:
+        numero = fila.get("_fila_csv", "?")
+        tipo = _valor(fila, "tipo_registro")
+        if not tipo:
+            errores.append(f"Fila {numero}: tipo_registro vacio")
+        elif tipo not in TIPOS_REGISTRO_VALIDOS:
+            errores.append(f"Fila {numero}: tipo_registro invalido '{tipo}'")
+    return errores
 
 
 def _importar_periodo(sistema, fila):
     sistema.registrar_periodo(
-        _valor(fila, "nombre"),
+        _valor(fila, "periodo_nombre", "nombre"),
         _valor(fila, "fecha_inicio"),
         _valor(fila, "fecha_fin"),
-        _valor(fila, "estado", default="Abierto") or "Abierto",
+        _valor(fila, "estado_periodo", "estado", default="Abierto") or "Abierto",
     )
 
 
@@ -385,8 +292,8 @@ def _importar_administrador(sistema, fila):
 
 def _importar_aula(sistema, fila):
     sistema.registrar_aula(
-        _valor(fila, "codigo"),
-        _valor(fila, "nombre"),
+        _valor(fila, "codigo_aula", "codigo"),
+        _valor(fila, "nombre_aula", "nombre"),
         _valor(fila, "capacidad"),
         _valor(fila, "piso"),
         _valor(fila, "edificio"),
@@ -407,18 +314,19 @@ def _importar_horario(sistema, fila):
 
 def _importar_curso(sistema, fila):
     docente = _buscar_docente(sistema, _valor(fila, "docente_cedula"))
-    aula = _buscar_aula(sistema, _valor(fila, "aula_codigo"))
+    aula_codigo = _valor(fila, "aula_codigo_curso", "aula_codigo")
+    aula = _buscar_aula(sistema, aula_codigo)
     horario = _buscar_horario(
         sistema,
         _valor(fila, "horario_dia"),
         _valor(fila, "horario_hora_inicio"),
         _valor(fila, "horario_hora_fin"),
         _valor(fila, "horario_grupo"),
-        _valor(fila, "aula_codigo"),
+        aula_codigo,
     )
     sistema.registrar_curso(
-        _valor(fila, "codigo"),
-        _valor(fila, "nombre"),
+        _valor(fila, "codigo_curso", "codigo"),
+        _valor(fila, "nombre_curso", "nombre"),
         _valor(fila, "nivel"),
         _valor(fila, "paralelo"),
         _valor(fila, "cupo_maximo"),
@@ -459,7 +367,7 @@ def _importar_calificacion(sistema, fila):
         estudiante,
         _valor(fila, "parcial1"),
         _valor(fila, "parcial2"),
-        observacion=_valor(fila, "observacion"),
+        observacion=_valor(fila, "observacion_nota", "observacion"),
     )
 
 
@@ -471,38 +379,31 @@ def _importar_asistencia(sistema, fila):
         docente,
         curso,
         estudiante,
-        _valor(fila, "fecha"),
-        _valor(fila, "estado"),
-        observacion=_valor(fila, "observacion"),
+        _valor(fila, "fecha_asistencia", "fecha"),
+        _valor(fila, "estado_asistencia", "estado"),
+        observacion=_valor(fila, "observacion_asistencia", "observacion"),
     )
 
 
 _IMPORTADORES = {
-    "periodos": _importar_periodo,
-    "docentes": _importar_docente,
-    "estudiantes": _importar_estudiante,
-    "administradores": _importar_administrador,
-    "aulas": _importar_aula,
-    "horarios": _importar_horario,
-    "cursos": _importar_curso,
-    "matriculas": _importar_matricula,
-    "cargas_academicas": _importar_carga,
-    "calificaciones": _importar_calificacion,
-    "asistencias": _importar_asistencia,
+    "periodo": _importar_periodo,
+    "docente": _importar_docente,
+    "estudiante": _importar_estudiante,
+    "administrador": _importar_administrador,
+    "aula": _importar_aula,
+    "horario": _importar_horario,
+    "curso": _importar_curso,
+    "matricula": _importar_matricula,
+    "carga_academica": _importar_carga,
+    "calificacion": _importar_calificacion,
+    "asistencia": _importar_asistencia,
 }
 
 
-def importar_filas(sistema, tipo: str, filas: list[dict]) -> ResultadoImportacion:
-    if tipo not in _IMPORTADORES:
-        raise ValueError(f"Tipo de entidad no soportado: {tipo}")
-
+def _importar_grupo(sistema, tipo: str, filas: list[dict]) -> ResultadoImportacion:
     resultado = ResultadoImportacion(tipo=tipo, total_filas=len(filas))
-    errores_columnas = validar_columnas(filas, tipo)
-    if errores_columnas:
-        resultado.errores.extend(errores_columnas)
-        return resultado
-
     importador = _IMPORTADORES[tipo]
+
     for fila in filas:
         numero = fila.get("_fila_csv", "?")
         try:
@@ -510,6 +411,35 @@ def importar_filas(sistema, tipo: str, filas: list[dict]) -> ResultadoImportacio
             resultado.importadas += 1
         except Exception as error:
             resultado.omitidas += 1
-            resultado.errores.append(f"Fila {numero}: {error}")
+            resultado.errores.append(f"[{tipo}] Fila {numero}: {error}")
+
+    return resultado
+
+
+def importar_dataset(sistema, filas: list[dict]) -> ResultadoImportacionDataset:
+    resultado = ResultadoImportacionDataset(total_filas=len(filas))
+    errores_modelo = validar_modelo_dataset(filas)
+    if errores_modelo:
+        resultado.errores.extend(errores_modelo)
+        return resultado
+
+    agrupadas: dict[str, list[dict]] = defaultdict(list)
+    for fila in filas:
+        agrupadas[_valor(fila, "tipo_registro")].append(fila)
+
+    for tipo in ORDEN_TIPOS_REGISTRO:
+        filas_tipo = agrupadas.get(tipo, [])
+        if not filas_tipo:
+            continue
+
+        parcial = _importar_grupo(sistema, tipo, filas_tipo)
+        resultado.importadas += parcial.importadas
+        resultado.omitidas += parcial.omitidas
+        resultado.errores.extend(parcial.errores)
+        resultado.resumen_por_tipo[tipo] = {
+            "total": parcial.total_filas,
+            "importadas": parcial.importadas,
+            "omitidas": parcial.omitidas,
+        }
 
     return resultado

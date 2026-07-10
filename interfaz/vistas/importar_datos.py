@@ -6,13 +6,12 @@ from interfaz.components.layout import intro_modulo, tabla_o_vacio
 from interfaz.idioma import t
 from modelos.admin import Administrador
 from servicios.importador_csv import (
-    CONFIG_TIPOS,
-    importar_filas,
+    ORDEN_TIPOS_REGISTRO,
+    contar_por_tipo,
+    importar_dataset,
     leer_csv,
-    listar_tipos_entidad,
-    obtener_config_tipo,
     obtener_plantilla_csv,
-    validar_columnas,
+    validar_modelo_dataset,
 )
 
 
@@ -20,16 +19,13 @@ def _etiqueta_tipo(tipo: str) -> str:
     return t(f"import.tipo.{tipo}")
 
 
-def _resumen_tipos():
+def _resumen_modelo():
     filas = []
-    for tipo in listar_tipos_entidad():
-        config = CONFIG_TIPOS[tipo]
-        columnas = ", ".join(config["columnas_requeridas"])
+    for indice, tipo in enumerate(ORDEN_TIPOS_REGISTRO, start=1):
         filas.append(
             {
-                "Orden": config["orden"],
-                "Tipo": _etiqueta_tipo(tipo),
-                "Columnas requeridas": columnas,
+                "Orden": indice,
+                "tipo_registro": tipo,
                 "Descripcion": t(f"import.desc.{tipo}"),
             }
         )
@@ -40,7 +36,15 @@ def _mostrar_resultado(resultado):
     if resultado.hubo_exito:
         st.success(
             t(
-                "import.resultado_ok",
+                "import.resultado_dataset_ok",
+                importadas=resultado.importadas,
+                total=resultado.total_filas,
+            )
+        )
+    elif resultado.importadas:
+        st.warning(
+            t(
+                "import.resultado_dataset_parcial",
                 importadas=resultado.importadas,
                 total=resultado.total_filas,
             )
@@ -51,16 +55,31 @@ def _mostrar_resultado(resultado):
     if resultado.omitidas:
         st.warning(t("import.resultado_omitidas", omitidas=resultado.omitidas))
 
+    if resultado.resumen_por_tipo:
+        st.markdown(f"**{t('import.resumen_fases')}**")
+        resumen_filas = [
+            {
+                "Fase": _etiqueta_tipo(tipo),
+                "Total": datos["total"],
+                "Importadas": datos["importadas"],
+                "Omitidas": datos["omitidas"],
+            }
+            for tipo, datos in resultado.resumen_por_tipo.items()
+        ]
+        st.dataframe(resumen_filas, use_container_width=True, hide_index=True)
+
     if resultado.errores:
         st.markdown(f"**{t('import.errores_titulo')}**")
-        for error in resultado.errores:
+        for error in resultado.errores[:50]:
             st.markdown(f"- {error}")
+        if len(resultado.errores) > 50:
+            st.caption(t("import.errores_mas", extra=len(resultado.errores) - 50))
 
 
 def _tab_guia():
-    intro_modulo(t("import.intro_guia"), "📋")
-    st.markdown(t("import.orden_recomendado"))
-    tabla_o_vacio(_resumen_tipos(), t("import.sin_tipos"))
+    intro_modulo(t("import.intro_guia_unificado"), "📋")
+    st.markdown(t("import.orden_recomendado_unificado"))
+    tabla_o_vacio(_resumen_modelo(), t("import.sin_tipos"))
 
     st.divider()
     st.markdown(f"**{t('import.notas_titulo')}**")
@@ -70,32 +89,17 @@ def _tab_guia():
 
 
 def _tab_importar(sistema):
-    intro_modulo(t("import.intro_importar"), "📥")
-
-    tipos = listar_tipos_entidad()
-    etiquetas = {_etiqueta_tipo(t): t for t in tipos}
-    etiqueta_sel = st.selectbox(t("import.seleccion_tipo"), list(etiquetas.keys()))
-    tipo = etiquetas[etiqueta_sel]
-    config = obtener_config_tipo(tipo)
-
-    st.caption(t(f"import.desc.{tipo}"))
-    st.markdown(
-        f"**{t('import.columnas_requeridas')}:** `{', '.join(config['columnas_requeridas'])}`"
-    )
-    if config["columnas_opcionales"]:
-        st.markdown(
-            f"**{t('import.columnas_opcionales')}:** `{', '.join(config['columnas_opcionales'])}`"
-        )
+    intro_modulo(t("import.intro_importar_unificado"), "📥")
 
     st.download_button(
         t("import.descargar_plantilla"),
-        data=obtener_plantilla_csv(tipo),
-        file_name=f"plantilla_{tipo}.csv",
+        data=obtener_plantilla_csv(),
+        file_name="plantilla_dataset_nivelacion.csv",
         mime="text/csv",
         use_container_width=True,
     )
 
-    archivo = st.file_uploader(t("import.subir_csv"), type=["csv"], key=f"csv_{tipo}")
+    archivo = st.file_uploader(t("import.subir_csv_unificado"), type=["csv"], key="csv_dataset")
 
     if not archivo:
         return
@@ -105,18 +109,27 @@ def _tab_importar(sistema):
         st.warning(t("import.archivo_vacio"))
         return
 
-    errores = validar_columnas(filas, tipo)
+    errores = validar_modelo_dataset(filas)
     if errores:
-        for error in errores:
+        for error in errores[:20]:
             st.error(error)
         return
+
+    conteo = contar_por_tipo(filas)
+    st.markdown(f"**{t('import.conteo_tipos')}**")
+    st.dataframe(
+        [{"tipo_registro": k, "filas": v} for k, v in sorted(conteo.items())],
+        use_container_width=True,
+        hide_index=True,
+    )
 
     preview = [{k: v for k, v in fila.items() if k != "_fila_csv"} for fila in filas[:5]]
     st.markdown(f"**{t('import.vista_previa')}** ({min(len(filas), 5)} / {len(filas)})")
     st.dataframe(preview, use_container_width=True, hide_index=True)
 
-    if st.button(t("import.ejecutar"), type="primary", use_container_width=True):
-        resultado = importar_filas(sistema, tipo, filas)
+    if st.button(t("import.ejecutar_dataset"), type="primary", use_container_width=True):
+        with st.spinner(t("import.importando")):
+            resultado = importar_dataset(sistema, filas)
         _mostrar_resultado(resultado)
 
 

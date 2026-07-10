@@ -3,6 +3,7 @@ __pycache__/
 *.zip
 .streamlit/secrets.toml
 interfaz/contexto_proyecto.md
+dataset_sintetico/
 ejecucion.txt
 servicios/ejecucion.txt
 
