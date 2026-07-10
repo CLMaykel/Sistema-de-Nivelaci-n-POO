@@ -32,6 +32,7 @@ from interfaz.vistas.dashboard_docente import mostrar_dashboard_docente
 from interfaz.vistas.dashboard_estudiante import mostrar_dashboard_estudiante
 from interfaz.vistas.estudiantes_docente import mostrar_estudiantes_docente
 from interfaz.vistas.horarios import mostrar_horarios
+from interfaz.vistas.importar_datos import mostrar_importar_datos
 from interfaz.vistas.inscripciones import mostrar_inscripciones
 from interfaz.vistas.mi_carga import mostrar_mi_carga
 from interfaz.vistas.mi_perfil import mostrar_mi_perfil
@@ -51,6 +52,7 @@ RUTAS = {
     "Inscripciones": mostrar_inscripciones,
     "Cargas": mostrar_cargas,
     "Reportes": mostrar_reportes,
+    "Importar Datos": mostrar_importar_datos,
     "Acerca del Sistema": mostrar_acerca,
     "Dashboard Docente": mostrar_dashboard_docente,
     "Mis Cursos": mostrar_mis_cursos,

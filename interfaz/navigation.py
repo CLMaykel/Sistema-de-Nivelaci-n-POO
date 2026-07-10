@@ -15,6 +15,7 @@ def obtener_opciones_por_rol(rol):
             "Inscripciones",
             "Cargas",
             "Reportes",
+            "Importar Datos",
             "Acerca del Sistema",
         ]
 
@@ -74,6 +75,7 @@ MODULOS_ADMIN = [
     ("Inscripciones", "modulos.admin.inscripciones"),
     ("Cargas", "modulos.admin.cargas"),
     ("Reportes", "modulos.admin.reportes"),
+    ("Importar Datos", "modulos.admin.importar"),
 ]
 
 # Módulos disponibles para docente con descripción i18n
