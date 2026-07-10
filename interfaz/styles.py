@@ -19,7 +19,7 @@ def aplicar_estilos():
         f"""
         <style>
             .main {{
-                background-color: #f8f8f8;
+                background-color: #eceae6;
             }}
             .main .block-container {{
                 color: {COLOR_NEGRO};
@@ -67,12 +67,12 @@ def aplicar_estilos():
                 color: {COLOR_NEGRO} !important;
             }}
             [data-testid="stMetric"] {{
-                background-color: {COLOR_BLANCO};
+                background-color: #faf8f5;
                 border-left: 4px solid {COLOR_VERDE};
                 border-bottom: 2px solid {COLOR_ROJO};
                 border-radius: 8px;
                 padding: 12px;
-                box-shadow: 0 2px 6px rgba(26, 26, 26, 0.1);
+                box-shadow: 0 2px 6px rgba(26, 26, 26, 0.06);
             }}
             [data-testid="stMetric"] label {{
                 color: {COLOR_GRIS_OSCURO} !important;
@@ -81,12 +81,12 @@ def aplicar_estilos():
                 color: {COLOR_NEGRO} !important;
             }}
             [data-testid="stForm"] {{
-                background-color: {COLOR_BLANCO};
-                border: 1px solid #dddddd;
+                background-color: #faf8f5;
+                border: 1px solid #d8d2ca;
                 border-top: 3px solid {COLOR_ROJO};
                 border-radius: 10px;
                 padding: 16px;
-                box-shadow: 0 1px 4px rgba(26, 26, 26, 0.08);
+                box-shadow: 0 1px 4px rgba(26, 26, 26, 0.05);
             }}
             h1 {{
                 color: {COLOR_NEGRO};
@@ -128,7 +128,7 @@ def aplicar_estilos():
             }}
             div[data-testid="stVerticalBlockBorderWrapper"] {{
                 border-top: 4px solid {COLOR_ROJO} !important;
-                background: {COLOR_BLANCO};
+                background: #faf8f5;
                 padding: 4px 0;
             }}
             .role-badge {{
@@ -142,8 +142,8 @@ def aplicar_estilos():
                 margin-bottom:8px;
             }}
             .role-card {{
-                background:{COLOR_BLANCO} !important;
-                border:1px solid #dddddd;
+                background:#faf8f5 !important;
+                border:1px solid #d8d2ca;
                 border-top:4px solid {COLOR_ROJO};
                 border-radius:12px;
                 padding:18px;
@@ -166,14 +166,6 @@ def aplicar_estilos():
                 margin-bottom:12px;
                 color:{COLOR_NEGRO_SUAVE} !important;
             }}
-            .login-card {{
-                background:{COLOR_BLANCO};
-                border:1px solid #dddddd;
-                border-top:4px solid {COLOR_ROJO};
-                border-radius:12px;
-                padding:24px 20px;
-                box-shadow:0 4px 12px rgba(26,26,26,0.1);
-            }}
         </style>
         """,
         unsafe_allow_html=True,
@@ -182,121 +174,171 @@ def aplicar_estilos():
 
 def aplicar_estilos_login():
     """Aplica estilos CSS específicos para la página de login"""
+    fondo_login = "#dfe4df"
+    fondo_suave = "#f3f1ec"
+    tarjeta = "#faf7f2"
+    tarjeta_alt = "#f0ece6"
+    borde = "#d5cec4"
+    texto_suave = "#5a5a56"
     st.markdown(
         f"""
         <style>
             section[data-testid="stSidebar"] {{
                 display: none !important;
             }}
-            .main .block-container {{
-                max-width: 100% !important;
-                padding-top: 0 !important;
-                padding-left: 1rem !important;
-                padding-right: 1rem !important;
-            }}
-            [data-testid="stAppViewContainer"] {{
-                background-color: #ececec !important;
-            }}
-            .main {{
-                background-color: #ececec !important;
-            }}
-            .uleam-topbar-wrap {{
-                background: linear-gradient(90deg, {COLOR_NEGRO} 0%, {COLOR_NEGRO_SUAVE} 100%);
-                border-bottom: 3px solid {COLOR_ROJO};
-                padding: 8px 16px;
-                margin: -1rem -1rem 1.5rem -1rem;
-                border-radius: 0;
-            }}
-            .uleam-lang-wrap {{
-                padding-top: 4px;
-            }}
-            .uleam-lang-wrap [data-testid="column"] {{
-                padding: 0 2px !important;
-            }}
-            .uleam-topbar {{
-                background: linear-gradient(90deg, {COLOR_NEGRO} 0%, {COLOR_NEGRO_SUAVE} 100%);
-                border-bottom: 3px solid {COLOR_ROJO};
-                padding: 10px 24px;
-                margin: -1rem -1rem 2rem -1rem;
-            }}
-            .uleam-topbar-inner {{
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                max-width: 1100px;
-                margin: 0 auto;
-            }}
-            .uleam-topbar-logo-img {{
-                height: 42px;
-                background: {COLOR_BLANCO};
-                padding: 4px 8px;
-                border-radius: 4px;
-            }}
-            .uleam-topbar-siglas {{
-                color: {COLOR_VERDE};
-                font-size: 1.4rem;
-                font-weight: 700;
-            }}
-            .uleam-topbar-actions {{
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }}
-            .uleam-lang {{
-                color: {COLOR_BLANCO};
-                font-size: 0.85rem;
-                font-weight: 600;
-            }}
-            .uleam-lang-muted {{
-                opacity: 0.55;
-            }}
-            .uleam-lang-sep {{
-                color: #888;
-            }}
-            .login-card {{
-                background: {COLOR_BLANCO};
-                border: 1px solid #d9d9d9;
-                border-radius: 10px;
-                padding: 28px 32px 20px 32px;
-                box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-                margin-top: 1rem;
-            }}
-            .login-card-header {{
-                text-align: center;
-                margin-bottom: 8px;
-            }}
-            .login-title {{
-                color: {COLOR_NEGRO};
-                font-size: 1.15rem;
-                font-weight: 700;
-                margin: 8px 0 4px 0;
-                border: none;
-                padding: 0;
-            }}
-            .login-subtitle {{
-                color: {COLOR_GRIS_OSCURO};
-                font-size: 0.82rem;
-                margin: 0 0 16px 0;
-            }}
-            [data-testid="stForm"] {{
-                border: none !important;
-                box-shadow: none !important;
-                padding: 0 !important;
+            header[data-testid="stHeader"] {{
                 background: transparent !important;
             }}
-            [data-testid="stForm"] label {{
-                color: {COLOR_GRIS_OSCURO} !important;
-                font-weight: 600 !important;
+            [data-testid="stAppViewContainer"] {{
+                background: linear-gradient(
+                    165deg,
+                    {fondo_login} 0%,
+                    #d8ddd6 38%,
+                    #e4e8e2 72%,
+                    #d3d9d2 100%
+                ) !important;
             }}
-            [data-testid="stFormSubmitButton"] button {{
-                background-color: {COLOR_ROJO} !important;
+            .main {{
+                background: transparent !important;
+            }}
+            .main .block-container {{
+                max-width: 720px !important;
+                padding-top: 0.75rem !important;
+                padding-bottom: 2rem !important;
+            }}
+            .login-hero {{
+                text-align: center;
+                margin: 0.75rem 0 1.35rem 0;
+                padding: 1.85rem 1.35rem 1.45rem 1.35rem;
+                background: linear-gradient(180deg, {tarjeta} 0%, {tarjeta_alt} 100%);
+                border-radius: 20px;
+                border: 1px solid {borde};
+                box-shadow: 0 12px 28px rgba(45, 45, 45, 0.06);
+                position: relative;
+                overflow: hidden;
+            }}
+            .login-hero::before {{
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 5px;
+                background: linear-gradient(90deg, {COLOR_ROJO} 0%, #e8c4c8 50%, {COLOR_VERDE} 100%);
+            }}
+            .login-hero-logo {{
+                width: min(240px, 72vw);
+                height: auto;
+                margin: 0.35rem auto 0.9rem auto;
+                display: block;
+                filter: drop-shadow(0 5px 12px rgba(0, 0, 0, 0.12));
+            }}
+            .login-hero-siglas {{
+                color: {COLOR_VERDE};
+                font-size: 1.55rem;
+                font-weight: 800;
+                letter-spacing: 0.1em;
+                margin: 0 0 0.35rem 0;
+            }}
+            .login-hero-title {{
+                color: #2f2f2b;
+                font-size: 1.32rem;
+                font-weight: 700;
+                margin: 0 0 0.45rem 0;
+                line-height: 1.35;
+            }}
+            .login-hero-subtitle {{
+                color: {texto_suave};
+                font-size: 0.9rem;
+                margin: 0;
+                line-height: 1.5;
+            }}
+            .login-hero-band {{
+                display: flex;
+                justify-content: center;
+                gap: 8px;
+                margin-top: 1.1rem;
+            }}
+            .login-hero-band span {{
+                display: inline-block;
+                width: 42px;
+                height: 4px;
+                border-radius: 999px;
+            }}
+            .login-hero-band .rojo {{ background: {COLOR_ROJO}; opacity: 0.85; }}
+            .login-hero-band .blanco {{ background: #c8c2b8; }}
+            .login-hero-band .verde {{ background: {COLOR_VERDE}; opacity: 0.85; }}
+            .main [data-testid="stAlert"] {{
+                background: #f8f0d8 !important;
+                border: 1px solid #e2d4b2 !important;
+                border-radius: 12px !important;
+                color: #5c4f32 !important;
+            }}
+            .main [data-testid="stAlert"] * {{
+                color: #5c4f32 !important;
+            }}
+            .main [data-testid="stForm"] {{
+                background: linear-gradient(180deg, {tarjeta} 0%, {fondo_suave} 100%);
+                border: 1px solid {borde};
+                border-radius: 18px;
+                padding: 1.4rem 1.55rem 0.85rem 1.55rem !important;
+                box-shadow: 0 8px 20px rgba(45, 45, 45, 0.05);
+            }}
+            .main [data-testid="stForm"] label {{
+                color: {texto_suave} !important;
+                font-weight: 600 !important;
+                font-size: 0.9rem !important;
+            }}
+            .main [data-testid="stTextInput"] input {{
+                background: #fffcf8 !important;
+                border-radius: 10px !important;
+                border: 1px solid #cfc7bc !important;
+                color: #33332f !important;
+            }}
+            .main [data-testid="stTextInput"] input:focus {{
+                border-color: {COLOR_VERDE} !important;
+                box-shadow: 0 0 0 2px rgba(0, 150, 57, 0.12) !important;
+            }}
+            .main [data-testid="stFormSubmitButton"] button {{
+                background: linear-gradient(90deg, {COLOR_ROJO} 0%, #b31228 100%) !important;
                 color: {COLOR_BLANCO} !important;
                 border: none !important;
-                font-weight: 600 !important;
-                padding: 0.55rem 1rem !important;
+                font-weight: 700 !important;
+                letter-spacing: 0.03em;
+                padding: 0.68rem 1rem !important;
+                border-radius: 10px !important;
+                box-shadow: 0 4px 14px rgba(206, 17, 38, 0.2);
             }}
-            [data-testid="stFormSubmitButton"] button:hover {{
-                background-color: {COLOR_NEGRO} !important;
+            .main [data-testid="stFormSubmitButton"] button:hover {{
+                background: #3a3a36 !important;
+                box-shadow: 0 4px 14px rgba(58, 58, 54, 0.22);
+            }}
+            .main .stButton > button {{
+                font-weight: 700 !important;
+                border-radius: 8px !important;
+                background: #ebe6df !important;
+                color: #4a4a46 !important;
+                border: 1px solid #cfc7bc !important;
+            }}
+            .main .stButton > button[kind="primary"] {{
+                background: {COLOR_ROJO} !important;
+                color: {COLOR_BLANCO} !important;
+                border: none !important;
+            }}
+            .main [data-testid="stExpander"] {{
+                background: {tarjeta};
+                border: 1px solid {borde};
+                border-radius: 14px;
+            }}
+            .main [data-testid="stExpander"] summary {{
+                color: {texto_suave} !important;
+            }}
+            .main hr {{
+                border-color: #c9c2b8 !important;
+                opacity: 0.55;
+            }}
+            [data-testid="stCaptionContainer"] p {{
+                color: {texto_suave} !important;
             }}
         </style>
         """,

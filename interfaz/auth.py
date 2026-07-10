@@ -107,21 +107,28 @@ def _logo_base64(ruta):
     return f"data:{mime};base64,{contenido}"
 
 
-def render_barra_superior():
-    # Renderiza la barra superior con logo y selector de idioma
-    st.markdown('<div class="uleam-topbar-wrap">', unsafe_allow_html=True)
-    col_logo, col_lang = st.columns([5, 1])
+def _render_hero_login():
+    logo_src = _logo_base64(RUTA_LOGO_VERTICAL) or _logo_base64(RUTA_LOGO)
+    logo_html = ""
+    if logo_src:
+        logo_html = f'<img class="login-hero-logo" src="{logo_src}" alt="{SIGLAS}">'
 
-    with col_logo:
-        if RUTA_LOGO.exists():
-            st.image(str(RUTA_LOGO), width=200)
-
-    with col_lang:
-        st.markdown('<div class="uleam-lang-wrap">', unsafe_allow_html=True)
-        selector_idioma(ubicacion="main")
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown(
+        f"""
+        <div class="login-hero">
+            {logo_html}
+            <p class="login-hero-siglas">{SIGLAS}</p>
+            <p class="login-hero-title">{t("app.titulo_sistema")}</p>
+            <p class="login-hero-subtitle">{t("app.universidad")}</p>
+            <div class="login-hero-band">
+                <span class="rojo"></span>
+                <span class="blanco"></span>
+                <span class="verde"></span>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def pantalla_login(sistema):
@@ -129,72 +136,53 @@ def pantalla_login(sistema):
     from interfaz.styles import aplicar_estilos_login
 
     aplicar_estilos_login()
-    render_barra_superior()
+
+    col_espacio, col_lang = st.columns([5, 1])
+    with col_lang:
+        selector_idioma(ubicacion="main")
 
     if not st.session_state.get("db_cargada"):
-        st.warning(
-            st.session_state.get("db_mensaje", t("app.demo_sql"))
+        st.warning(st.session_state.get("db_mensaje", t("app.demo_sql")))
+
+    _render_hero_login()
+
+    with st.form("form_login_institucional", clear_on_submit=False):
+        usuario = st.text_input(
+            t("login.usuario"),
+            placeholder=t("login.placeholder_usuario"),
+        )
+        contrasena = st.text_input(
+            t("login.contrasena"),
+            type="password",
+            placeholder=t("login.placeholder_contrasena"),
+        )
+        enviar = st.form_submit_button(
+            t("login.acceder"),
+            use_container_width=True,
+            type="primary",
         )
 
-    _, col_centro, _ = st.columns([1, 1.1, 1])
+        if enviar:
+            if not usuario.strip() or not contrasena:
+                st.error(t("login.error_campos"))
+            else:
+                ok, mensaje = autenticar_usuario(sistema, usuario, contrasena)
+                if ok:
+                    st.rerun()
+                else:
+                    st.error(mensaje)
 
-    with col_centro:
-        st.markdown('<div class="login-card">', unsafe_allow_html=True)
-
-        if RUTA_LOGO_VERTICAL.exists():
-            st.image(str(RUTA_LOGO_VERTICAL), width=120)
-        elif RUTA_LOGO.exists():
-            st.image(str(RUTA_LOGO), width=220)
-
+    with st.expander(t("login.credenciales_titulo")):
+        gestor = obtener_gestor_idioma()
         st.markdown(
             f"""
-            <div class="login-card-header">
-                <h2 class="login-title">{t("app.titulo_sistema")}</h2>
-                <p class="login-subtitle">{SIGLAS} · {t("app.universidad")}</p>
-            </div>
-            """,
-            unsafe_allow_html=True,
+            | {t("login.tabla_rol")} | {t("login.tabla_usuario")} | {t("login.tabla_contrasena")} |
+            |-----|------------------|------------|
+            | {gestor.traducir_rol("Administrador")} | 1300004444 | adm123 |
+            | {gestor.traducir_rol("Docente")} | 1300001111 | doc123 |
+            | {gestor.traducir_rol("Estudiante")} | 1300002222 | est123 |
+            """
         )
-
-        with st.form("form_login_institucional", clear_on_submit=False):
-            usuario = st.text_input(
-                t("login.usuario"),
-                placeholder=t("login.placeholder_usuario"),
-            )
-            contrasena = st.text_input(
-                t("login.contrasena"),
-                type="password",
-                placeholder=t("login.placeholder_contrasena"),
-            )
-            enviar = st.form_submit_button(
-                t("login.acceder"),
-                use_container_width=True,
-                type="primary",
-            )
-
-            if enviar:
-                if not usuario.strip() or not contrasena:
-                    st.error(t("login.error_campos"))
-                else:
-                    ok, mensaje = autenticar_usuario(sistema, usuario, contrasena)
-                    if ok:
-                        st.rerun()
-                    else:
-                        st.error(mensaje)
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-        with st.expander(t("login.credenciales_titulo")):
-            gestor = obtener_gestor_idioma()
-            st.markdown(
-                f"""
-                | {t("login.tabla_rol")} | {t("login.tabla_usuario")} | {t("login.tabla_contrasena")} |
-                |-----|------------------|------------|
-                | {gestor.traducir_rol("Administrador")} | 1300004444 | adm123 |
-                | {gestor.traducir_rol("Docente")} | 1300001111 | doc123 |
-                | {gestor.traducir_rol("Estudiante")} | 1300002222 | est123 |
-                """
-            )
 
 
 def pantalla_seleccion_rol(sistema):
