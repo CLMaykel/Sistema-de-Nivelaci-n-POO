@@ -17,7 +17,7 @@ RUTA_LOGO = _ASSETS / "Eloy-Alfarohorizontal.jpg"
 RUTA_LOGO_VERTICAL = _ASSETS / "LOGO-ULEAM-VERTICAL.png"
 RUTA_ESCUDO = RUTA_LOGO_VERTICAL
 
-# Paleta: rojo, blanco, verde y tonos negros
+# Paleta de colores: rojo, blanco, verde y tonos negros
 COLOR_ROJO = "#CE1126"
 COLOR_VERDE = "#009639"
 COLOR_BLANCO = "#FFFFFF"
@@ -26,11 +26,13 @@ COLOR_NEGRO_SUAVE = "#2D2D2D"
 COLOR_GRIS_OSCURO = "#404040"
 
 
+# Muestra el logo horizontal de ULEAM con ancho personalizable
 def mostrar_logo(ancho=220):
     if RUTA_LOGO.exists():
         st.image(str(RUTA_LOGO), width=ancho)
 
 
+# Muestra el logo vertical en la página de login centrado
 def mostrar_logo_login():
     if RUTA_LOGO_VERTICAL.exists():
         _, col, _ = st.columns([1, 1, 1])
@@ -40,11 +42,13 @@ def mostrar_logo_login():
         mostrar_logo(ancho=280)
 
 
+# Muestra el logo en la barra lateral izquierda
 def mostrar_logo_sidebar():
     if RUTA_LOGO.exists():
         st.sidebar.image(str(RUTA_LOGO), use_container_width=True)
 
 
+# Genera el HTML del encabezado de la barra lateral con información institucional
 def encabezado_sidebar():
     return f"""
     <div style="text-align:center;padding-bottom:8px;">
@@ -57,6 +61,7 @@ def encabezado_sidebar():
     """
 
 
+# Renderiza el encabezado de una página con el título del módulo y período académico
 def encabezado_pagina(titulo_modulo, periodo=None):
     periodo_texto = periodo or PERIODO_ACTUAL
     st.markdown(
